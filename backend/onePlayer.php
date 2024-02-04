@@ -104,18 +104,19 @@ if (isset($_SESSION['user'])) {
 
 <body>
     <div id="graph-container"></div>
+    <script>
+        let data = <?php echo json_encode($_SESSION['data']) ?>;
+    </script>
+    <script src="../script/graphic.js"></script>
     <form method="POST">
         <div class="word-area">
-            <input type='text' name='user_word' />
+            <label>
+                <input type='text' name='user_word' />
+            </label>
             <input type="submit" id="play" name="play" value="Jouer" />
         </div>
     </form> <br>
     <p><a href="home.php">Retour</a></p>
-    <script>
-        var data = <?php echo json_encode($_SESSION['data']) ?>;
-        console.log(data);
-    </script>
-    <script src="../script/graphic.js"></script>
 </body>
 
 </html>
