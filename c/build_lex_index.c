@@ -293,6 +293,7 @@ void insertAllWordOffset(const char *file_name, CSTree *tree)
     }
     fscanf(f, "%lld", &words_total);
     fscanf(f, "%lld", &size);
+    long long offsets[words_total];
     vocab = (char *)malloc((long long)words_total * max_w * sizeof(char));
     M = (float *)malloc((long long)words_total * (long long)size * sizeof(float));
     if (M == NULL)
@@ -303,6 +304,7 @@ void insertAllWordOffset(const char *file_name, CSTree *tree)
     for (long long b = 0; b < words_total; b++)
     {
         long long a = 0;
+        offsets[b] = ftell(f);
         while (1)
         {
             vocab[b * max_w + a] = fgetc(f);
@@ -323,11 +325,10 @@ void insertAllWordOffset(const char *file_name, CSTree *tree)
     }
     fclose(f);
 
-    long long offset = -1;
     for (long long a = 0; a < words_total; a++)
     {
         //printf("Word %lld: %s\n", a, &vocab[a * max_w]);
-        insertWordWithOffset(tree, &vocab[a * max_w], a);
+        insertWordWithOffset(tree, &vocab[a * max_w], offsets[a]);
     }
 
     free(vocab);
