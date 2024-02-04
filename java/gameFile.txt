@@ -1,0 +1,17 @@
+5,12
+chien,chat,voiture,avion,transport
+chien,initial,5
+chat,final,10
+voiture,player1,20
+avion,player2,30
+transport,player3,40
+chien,chat,20,10
+voiture,chien,30,10
+voiture,chat,40,10
+avion,chien,20,20
+avion,chat,30,20
+avion,voiture,40,20
+transport,chien,20,30
+transport,chat,30,30
+transport,voiture,40,30
+transport,avion,50,30
