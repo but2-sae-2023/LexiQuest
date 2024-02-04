@@ -35,7 +35,11 @@ if (isset($_SESSION['user'])) {
             <h2>Nom d'utilisateur : <u> <?php echo $user->getUsername()?> </u></h2>
             <h2>Adresse Email : <u> <?php echo $user->getEmail()?> </u> </h2>
             <h2>Année de naissance : <u> <?php echo $user->getBirthYear()?> </u></h2>
-            <h2>Date d'inscription : <u> <?php echo $user->getSignupDate()?> </u></h2>
+            <?php 
+                $orgDate = $user->getSignupDate();
+                $newDate = date("d-m-Y", strtotime($orgDate));
+            ?>
+            <h2>Date d'inscription : <u> <?php echo $newDate ?> </u></h2>
         </div>
     </div>
     <br>

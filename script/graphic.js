@@ -7,6 +7,10 @@ Highcharts.chart('graph-container', {
         }
     },
 
+    credits: {
+        enabled: false
+    },
+
     chart: {
         type: 'networkgraph',
         backgroundColor: null,
