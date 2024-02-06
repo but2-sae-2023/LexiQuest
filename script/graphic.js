@@ -1,10 +1,6 @@
 Highcharts.chart('graph-container', {
     title: {
-        text: "Partie monojoueur",
-        style: {
-            color: 'white',
-            fontSize: '30px'
-        }
+        text: null
     },
 
     credits: {

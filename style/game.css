@@ -1,0 +1,51 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: gray;
+}
+
+.wrapper {
+    width: 500px;
+    max-width: 100%;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+.wrapper input[type=text] {
+    background: hsla(41, 100%, 0%, 0.4);
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    padding: 20px 15px;
+    color: white;
+    width: 100%;
+}
+
+.wrapper input[type=submit] {
+    color: #240B36;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    padding: 15px 15px;
+    height: 80%;
+    aspect-ratio: 1;
+    font-size: 1em;
+    background-image: url(../data/img/arrow.png);
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+
+    position: absolute;
+    right: 5px;
+}

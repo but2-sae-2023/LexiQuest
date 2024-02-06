@@ -7,6 +7,7 @@
     padding: 0;
     color: white;
     font-family: var(--text-font);
+    box-sizing: border-box;
 }
 
 /* Setting custom CSS variables */
@@ -86,9 +87,9 @@ h3 {
 }
 
 /* Styling input elements, paragraphs, and form subheadings */
-input, .input p, form h3 {
-    margin: 5px 50px;
-}
+/*input, .input p, form h3 {*/
+/*    margin: 5px 50px;*/
+/*}*/
 
 /* Styling text inputs */
 input:not(input[type="submit"]) {
@@ -211,7 +212,7 @@ input[type=submit]:focus {
     flex-direction: column;
     background-color: white;
     padding: 10px 19px;
-    border-radius: 100%;   
+    border-radius: 100%;
     transition: 0.3s;
 }
 
@@ -309,11 +310,7 @@ hr {
     max-width: 1000px; */
     width: 70%;
     margin: 0 auto;
-    height: 60%;
-}
-
-.word-area {
-    display: flex;
+    height: 70%;
 }
 
 /* styling trace table */
@@ -335,4 +332,24 @@ th {
 
 tr:hover {
     background-color: rgb(36, 36, 124);
+}
+
+.back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 50px;
+    height: 50px;
+    width: 50px;
+    background-color: rgba(255, 255, 255, 1);
+    background-image: url(../data/img/back.png);
+    background-size: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.back:hover {
+    background-color: white;
 }

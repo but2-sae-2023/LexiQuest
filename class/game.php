@@ -6,8 +6,9 @@ class Game {
 
     public function playGame($user_id, $score) {
         $cnx = User::init_cnx();
+        $game_timestamp = time();
         $request = $cnx->prepare("INSERT INTO sae_game (game_timestamp, user_id, score) VALUES (?, ?, ?);");
-        $request->bind_param("ssi", time(), $user_id, $score);
+        $request->bind_param("ssi", $game_timestamp, $user_id, $score);
         return $request->execute(); 
         
     }
@@ -24,8 +25,9 @@ class Game {
         $cnx = User::init_cnx();
 
         $game_id = self::getGameId($user_id);
+        $game_timestamp = time();
         $request = $cnx->prepare("INSERT INTO sae_score (score, score_timestamp, game_id) VALUES (?, ?, ?);");
-        $request->bind_param("isi", $score, time(), $game_id);
+        $request->bind_param("isi", $score, $game_timestamp, $game_id);
         $request->execute();
     }
 
@@ -39,8 +41,8 @@ class Game {
         return $row['game_id'];
     }
 
-    private function initializeGame($user_id) {
-        
+    public function openFile() {
+
     }
 
 }

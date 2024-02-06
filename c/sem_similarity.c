@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     const char *mot1 = argv[2];
     const char *mot2 = argv[3];
 
-    printf("La distance sémantique entre %s et %s est de : %d", mot1, mot2, sem_similarity(file_name, mot1, mot2));
+    printf("La distance sémantique entre %s et %s est de : %f", mot1, mot2, sem_similarity(file_name, mot1, mot2));
 
     return 0;
 }

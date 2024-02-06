@@ -1,4 +1,9 @@
-﻿#include <math.h>
+﻿#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+#include "dict_lookup.h"
+
 #ifndef SEM_SIMILARITY_H
 #define SEM_SIMILARITY_H
 
@@ -6,18 +11,20 @@ const long long max_size = 2000; // max length of strings
 const long long N = 40;          // number of closest words that will be shown
 const long long max_w = 50;
 
-
-double sem_similarity(const char *file_name, const char *mot1, const char *mot2)
+float sem_similarity(const char *file_name, const char *mot1, const char *mot2)
 {
     FILE *f;
-    char st1[max_size];
-    char *bestw[N];
-    char st[100][max_size];
-    float dist, len, bestd[N], vec[max_size];
-    long long words, size, a, b, c, d, cn, bi[100];
-    char ch;
-    float *M;
-    char *vocab;
+    long long words, size, a;
+    float len;
+
+    long long offset1 = getOffset("output.lex", mot1);
+    long long offset2 = getOffset("output.lex", mot2);
+
+    if (offset1 == -1 || offset2 == -1)
+    {
+        printf("One or both words not found in the dictionary.\n");
+        return -1.0; // Or handle the error in a way that suits your application
+    }
 
     f = fopen(file_name, "rb");
     if (f == NULL)
@@ -25,80 +32,66 @@ double sem_similarity(const char *file_name, const char *mot1, const char *mot2)
         printf("Input file not found\n");
         exit(EXIT_FAILURE);
     }
+
     fscanf(f, "%lld", &words);
     fscanf(f, "%lld", &size);
-    vocab = (char *)malloc((long long)words * max_w * sizeof(char));
-    for (a = 0; a < N; a++)
-        bestw[a] = (char *)malloc(max_size * sizeof(char));
-    M = (float *)malloc((long long)words * (long long)size * sizeof(float));
-    if (M == NULL)
-    {
-        printf("Cannot allocate memory: %lld MB    %lld  %lld\n", (long long)words * size * sizeof(float) / 1048576, words, size);
-        exit(EXIT_FAILURE);
-    }
-    for (b = 0; b < words; b++)
-    {
-        a = 0;
-        while (1)
-        {
-            vocab[b * max_w + a] = fgetc(f);
-            if (feof(f) || (vocab[b * max_w + a] == ' '))
-                break;
-            if ((a < max_w) && (vocab[b * max_w + a] != '\n'))
-                a++;
-        }
-        vocab[b * max_w + a] = 0;
-        for (a = 0; a < size; a++)
-            fread(&M[a + b * size], sizeof(float), 1, f);
-        len = 0;
-        for (a = 0; a < size; a++)
-            len += M[a + b * size] * M[a + b * size];
-        len = sqrt(len);
-        for (a = 0; a < size; a++)
-            M[a + b * size] /= len;
-    }
+
+    float vec1[size], vec2[size];
+
+    // Test de lecture des vecteurs des mots
+    fseek(f, offset1, SEEK_SET);
+
+    char word[max_w];
+    char *ch;
+    word[0] = 0;
+    fscanf(f, "%[^ ]", word);
+    fscanf(f, "%c", &ch);
+
+//    for (a = 0; a < size; a++) {
+//        fread(&vec1[a], sizeof(float), 1, f);
+//        printf("%f ", vec1[a]);
+//    }
+
+    fseek(f, offset2, SEEK_SET);
+
+    fscanf(f, "%[^ ]", word);
+    fscanf(f, "%*c", &ch);
+
+//    for (a = 0; a < size; a++) {
+//        fread(&vec2[a], sizeof(float), 1, f);
+//        printf("%f ", vec2[a]);
+//    }
+//    printf("\n");
+
+
     fclose(f);
 
-    // Recherche des indices des mots dans le vocabulaire
-    long long offset1 = -1, offset2 = -1;
-    for (a = 0; a < words; a++)
-    {
-        if (!strcmp(&vocab[a * max_w], mot1))
-        {
-            offset1 = a;
-            break;
-        }
-    }
-    for (a = 0; a < words; a++)
-    {
-        if (!strcmp(&vocab[a * max_w], mot2))
-        {
-            offset2 = a;
-            break;
-        }
-    }
 
-    if (offset1 == -1 || offset2 == -1)
-    {
-        fprintf(stderr, "One or both words not found in the vocabulary\n");
-        exit(EXIT_FAILURE);
-    }
+    // Déplacement dans le fichier pour lire les vecteurs des mots
+    // Calcul : offset du mot * taille des vecteurs * taille d'un float (car ce sont des float) + 2 * sizeof(long long) (car il y a 2 long long au début du fichier)
 
-    // Calcul de la similarité cosinus entre les vecteurs de mot1 et mot2
+    // Normalisation des vecteurs
+    float len1 = 0;
+    float len2 = 0;
     for (a = 0; a < size; a++)
     {
-        vec[a] = M[a + offset1 * size];
+        len1 += vec1[a] * vec1[a];
+        len2 += vec2[a] * vec2[a];
     }
+    len1 = sqrt(len1);
+    len2 = sqrt(len2);
 
+    // Produit scalaire
+    //printf("Produit scalaire...\n");
     len = 0;
     for (a = 0; a < size; a++)
     {
-        len += vec[a] * M[a + offset2 * size];
+        len += vec1[a] * vec2[a];
     }
-    len = sqrt(len);
+    len = len / (len1 * len2);
 
-    //printf("Similarité cosinus entre '%s' et '%s' : %f\n", mot1, mot2, 100*len);
-    return 100*len;
+    return len * 100;
 }
+
 
 #endif
