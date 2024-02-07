@@ -86,6 +86,12 @@ h3 {
     justify-content: space-between;
 }
 
+.input label {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: start;
+}
+
 /* Styling input elements, paragraphs, and form subheadings */
 /*input, .input p, form h3 {*/
 /*    margin: 5px 50px;*/

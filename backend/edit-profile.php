@@ -8,9 +8,9 @@ if (isset($_SESSION['user'])) {
         header('location: ../index.php');
     } else {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['birth-year']) && isset($_POST['password'])) {
+            if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['birth-year']) && isset($_POST['password']) && isset($_POST['password-repeat'])) {
 
-                $user = $user->updateUser($_POST['username'],$_POST['email'],$_POST['birth-year'],$_POST['password']);
+                $user = $user->updateUser($_POST['username'],$_POST['email'],$_POST['birth-year'],$_POST['password'], $_POST['password-repeat']);
                 $_SESSION['user'] = $user;
             }
         }
@@ -49,12 +49,17 @@ if (isset($_SESSION['user'])) {
                 <input type="number" name="birth-year" min="<?php echo date_format($min_year, "Y") ?>" max="<?php echo date_format($max_year, "Y");?>" placeholder="Année de naissance (Actuel : <?php echo $user->getBirthYear(); ?>)" value="<?php echo $user->getBirthYear(); ?>" />
             </div>
             <div class="input">
+                <label for="">Mot de passe requis pour confirmer la modification</label>
                 <input type="password" name="password" placeholder="Mot de passe" required />
             </div>
-            <input type="submit" value="Mettre à jour le profil" />
-            <div class="options">
-                <a href="profile.php">Retour</a>
+            <div class="input">
+                <label for="">Confirmez votre mot de passe</label>
+                <input type="password" name="password-repeat" placeholder="Mot de passe" required />
             </div>
+            <input type="submit" value="Mettre à jour le profil" />
+            <a href="profile.php">
+                <div class="back"></div>
+            </a>
         </form>
     </div>
 

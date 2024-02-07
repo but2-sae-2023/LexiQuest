@@ -44,10 +44,10 @@ if (isset($_SESSION['user'])) {
     </div>
     <br>
     <p><a href="trace.php"><button>Page de trace</button></a></p> <br>
-    
-    <div class="options">
-        <a href="home.php">Retour</a>
-    </div>
+
+    <a href="home.php">
+        <div class="back"></div>
+    </a>
 
 </body>
 

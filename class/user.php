@@ -218,7 +218,7 @@ class User
         return $this->connected;
     }
 
-    public function updateUser($username, $email, $birth_year, $password)
+    public function updateUser($username, $email, $birth_year, $password, $password_repeat)
     {
         $cnx = self::init_cnx();
         if (self::checkUsername($username) && $username != $this->username) {
@@ -231,13 +231,20 @@ class User
             return $this;
         }
 
+        if ($password_repeat != $password) {
+            echo "<h2 class='red'> Les mots de passe ne sont pas identiques </h2> ";
+            return $this;
+        }
+
         if (!self::checkIfRegistered($this->username, $password)) {
             echo "<h2 class='red'> Mot de passe invalide </h2> ";
             return $this;
         }
+
         $request = $cnx->prepare("UPDATE sae_user SET username = ?, email = ?, birth_year = ? WHERE user_id = ?");
         $request->bind_param("ssss", $username, $email, $birth_year, $this->user_id);
         $request->execute();
+        echo "<h2 class='green'> Votre profil a bien été mis à jour </h2> ";
         return self::constructUserFromDb($this->user_id);
     }
 
