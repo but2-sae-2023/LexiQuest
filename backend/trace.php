@@ -61,8 +61,11 @@ $cnx    ->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trace</title>
     <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/trace.css">
 </head>
 <body> <br>
-    <p><a href="profile.php">Retour</a></p>
+    <a href="profile.php">
+        <div class="back"></div>
+    </a>
 </body>
 </html>

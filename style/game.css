@@ -8,6 +8,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 100vh;
     background-color: gray;
 }
@@ -16,7 +17,6 @@ body {
     width: 500px;
     max-width: 100%;
     position: relative;
-
     display: flex;
     align-items: center;
 }
@@ -49,3 +49,10 @@ body {
     position: absolute;
     right: 5px;
 }
+
+#graph-container {
+    width: 70%;
+    margin: 0 auto;
+    height: 70%;
+}
+
