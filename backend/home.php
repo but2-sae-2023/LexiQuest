@@ -11,7 +11,93 @@
     } else {
         header('location: ../index.php');
     }
+
+
+if (chdir("../java/")) {                
+
+} else {
+    echo "Erreur : Impossible de changer de répertoire.\n";
+}
+
+
+
+
+
+$fichier = fopen("gameFile.txt", 'r');
+
+if ($fichier) {
+    fgets($fichier);
+    fgets($fichier);
+
+    $mot_dep = fgets($fichier);
+    $mot_depart = explode(',', $mot_dep)[0];
+
+   
+
+    
+    $mot_arr = fgets($fichier);
+    $mot_arrive = explode(',', $mot_arr)[0];
+
+    
+    fclose($fichier);
+
+    
+    echo "Mot de depart  : $mot_depart<br>";
+    echo "Mot d'arrive  : $mot_arrive<br>";
+} else {
+    echo "Impossible d'ouvrir le fichier.";
+}
+
+
+exec("../maven/bin/mvn compile 2>&1 " , $output, $returnn);
+
+
+
+print_r($output);
+echo " $output <br>";
+echo " $returnn <br>";
+
+
+
+
+
+
+    $commandeMaven = "../jdk/usr/lib/jvm/jdk/bin/java -cp ./target/classes fr.uge.Main $mot_depart $mot_arrive 2>&1";
+
+    exec($commandeMaven, $outputMaven, $returnMaven);
+              
+
+
+
+$fichier = fopen("msTree.txt", "r");
+
+
+if ($fichier) {
+
+    while (($ligne = fgets($fichier)) !== false) {
+     
+        $ligne = trim($ligne);
+        
+  
+        $champs = str_getcsv($ligne, ",");
+        
+     
+        echo "1 : " . $champs[0] . ", 2 : " . $champs[1] . ", Nombre : " . $champs[2] . "\n";
+    }
+    
+ 
+    fclose($fichier);
+} else {
+  
+    echo "Erreur : Impossible d'ouvrir le fichier.";
+}
+
 ?>
+
+
+
+
+
 
 <!Doctype HTML>
 <html>
