@@ -384,4 +384,15 @@ class User
             $request->execute();
         }
     }
+
+    public function setStats($user_id) {
+        // Récupérer le nombre de parties jouées
+        $this->nb_game_played = $this->getNumberGamesPlayed($user_id);
+        // Récupérer le score moyen
+        $this->avg_score = $this->getScore($user_id, 'AVG');
+        // Récupérer le score minimum
+        $this->min_score = $this->getScore($user_id, 'MIN');
+        // Récupérer le score maximum
+        $this->max_score = $this->getScore($user_id, 'MAX');
+    }
 }
