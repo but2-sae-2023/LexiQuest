@@ -1,0 +1,11 @@
+*, ::after, ::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ------------------------------------------- Partie principale de la page ------------------------------------------------------------ */
+main{
+    height: 100%;
+    width: 100%;
+}

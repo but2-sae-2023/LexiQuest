@@ -6,21 +6,29 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type= "text/css" href=../style/style.css>
+        <link rel="stylesheet" type= "text/css" href=../style/header.css>
         <link rel="stylesheet" type= "text/css" href=../style/compte.css>
+        
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
         <title>Compte</title>
     </head>
     <body>
         <!-- Header.tsx-->
         <header>
-            <img src="../data/img/logo.png" alt="logo de LexiQuest">
+            <img id='logo' src="../data/img/logo.png" alt="logo de LexiQuest">
             <h1>LexiQuest</h1>
-            <a href="compte.html">
-                <!-- fetch les données de l'img et du nom d'utilisateur -->
-                <img id='img_compte' 
-                src="https://media.discordapp.net/attachments/1180876461889048579/1192913030065950740/furina.jpg?ex=65e22cd5&is=65cfb7d5&hm=3f0536ff85925ce1697dd2acc646bbfcfda95c9a803351234d4bf8a266087213&=&format=webp&width=1173&height=660" 
-                alt="img_profile">
-                <h2 id='nom_compte'>Votre nom</h2>
-            </a>
+            <div>
+                <a href="compte.html">
+                    <img id='img_compte' src="#" alt="img_profile">
+                    <h2 id='nom_compte'>Votre nom</h2>
+                </a>
+            </div>
+            
         </header>
 
         <!-- TO DO: fonction qui récupère les infos depuis php:
@@ -38,20 +46,140 @@
             - score moyen des parties de l'utilisateur
             - score max des parties de l'utilisateur
 
-            Récupérer ces informations depuis la base de donnée
+            Récupérer ces informations de l'objet user.php
         -->
 
         <!-- infos.tsx-->
         <main>
-            <!-- function infos-->
+            <!-- function infos -->
             <section id="infos">
-
+                <h2>Vos informations</h2>
+                <!-- function infos_user -->
+                <div class="user_infos">
+                    <ul>
+                        <!-- A remplacer avec les informations de user.php -->
+                        <li id="pseudo">Pseudo: Votre nom</li>
+                        <li>Mot de passe: ***</li>
+                        <li id="email">Adresse e-mail: blabla@mail.com</li>
+                        <li id="birthyear">Année de naissance : 2000</li>
+                        <li id="signup">Date d’inscription: 17/12/2023</li>
+                    </ul>
+                </div>
             </section>
 
             <!-- function stats-->
             <section id="stats">
-                
+                <h2>Stats de partie</h2>
+
+                <div class="user_stats">
+                    <h2 id="nb_parties">Parties joués: 20 parties</h2>
+
+                    <!-- Graphe-->
+                    <figure class="highcharts-figure">
+                        <div id="graph"></div>
+                    </figure>
+
+                </div>
             </section>
         </main>
     </body>
 </html>
+
+<!-- Récupère les données de l'utilisateur ( l'objet User.php) avec AJAX -->
+<script>
+    // Fonction pour récupérer les données de session via AJAX
+    function getUserData() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var user = JSON.parse(xhr.responseText);
+
+                    // Utiliser les données de $_SESSION['user'] récupérées
+                    document.getElementById('img_compte').src = user.profile_image;
+                    document.getElementById('nom_compte').textContent = user.username;
+
+                    document.getElementById('pseudo').textContent = 'Pseudo: ' + user.username;
+                    document.getElementById('email').textContent = 'Adresse e-mail: ' + user.email;
+                    document.getElementById('birthyear').textContent = 'Année de naissance : ' + user.birth_year;
+                    document.getElementById('signup').textContent = 'Date d’inscription: ' + user.date_signup;
+
+                    document.getElementById('nb_parties').textContent = 'Nombre de parties totales: ' + user.nb_game_played;
+
+                    let arrayData = [
+                        {
+                            name: 'Score max',
+                            y: user.max_score
+                        },
+                        {
+                            name: 'Score moyen',
+                            y: user.avg_score
+                        },
+                        {
+                            name: 'Score min',
+                            y: user.min_score
+                        }
+                    ];
+                } else {
+                    console.error('Erreur de récupération des données de session : ' + xhr.statusText);
+                }
+            }
+        };
+        xhr.open('GET', 'get_user_data.php', true);
+        xhr.send();
+    }
+
+    // Appeler la fonction pour récupérer les données de session
+    //getUserData();
+</script>
+
+<!-- Script pour le graphique -->
+<script>
+    Highcharts.chart('graph', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            align: 'left',
+            text: 'Stats de parties '
+        },
+        accessibility: {
+            announceNewData: {
+                enabled: true
+            }
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: 'Total de points'
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y:.2f}'
+                }
+            }
+        },
+
+        tooltip: {
+            pointFormat: '<b>{point.y:.2f}</b><br/>'
+        },
+
+        series: [
+            {
+                name: 'Catégories',
+                colorByPoint: true,
+                data: arrayData
+            }
+        ],
+    });
+</script>
