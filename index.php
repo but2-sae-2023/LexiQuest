@@ -8,10 +8,12 @@ if (isset($_SESSION['user'])) {
         header('location: ./backend/home.php'); 
     }
 }
+
 if (isset($_POST['user']) && isset($_POST['pwd'])) {
     $user = new User();
     $user = $user->connect($_POST['user'], $_POST['pwd']);
-    if ($user) {
+
+    if ($user != false) {
         $_SESSION['user'] = $user;
         header('location: ./backend/home.php');
     }

@@ -10,6 +10,7 @@ header{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 header *{
@@ -27,43 +28,45 @@ header img{
     background: #00000035;
     width: auto;
     object-fit: contain;
-    border-bottom-right-radius: 5vw;
+    border-bottom-right-radius: 20px;
 }
 
 header h1{
-    flex: 7;
+    flex: 6;
     text-align: center;
     align-self: center;
     font-size: 7vh;
 }
 
-header div{
-    display: flex;
-    flex: 2;
-}
-
-header div a{
-    display: flex;
-    height: 100%;
-    width: auto;
+header a{
+    flex: 1;
     background-color: white;
-    border-radius: 50vw;
-    flex-direction: column;
-    justify-content: center;
-}
-
-/* Photo de profil */
-header a img{
-    border-radius: 20px;
-    margin: auto;
-    height: 80%;
+    border-radius: 10vw;
+    height: 50%;
     width: auto;
+    padding: 0;
+    margin: 2vh 2vw;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 1vh;
 }
 
-header a h2{
+header a img {
+    padding: 0;
+    width: auto; 
+    height: 70%;
+    border: 1px solid black;
+    clip-path: circle(35%);
+}
+
+header a h2 {
+    display: flex;
     font-size: 2vh;
+    height: min-content;
     color: black;
     text-decoration: none;
     text-align: center;
+    align-items: center;
 }
-

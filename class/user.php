@@ -21,6 +21,11 @@ class User
     private $max_score;
 
     // Auxiliary functions
+    public function expose(){
+        return get_object_vars($this);
+    }
+
+    // Auxiliary functions
 
     public static function init_cnx()
     {
@@ -181,10 +186,15 @@ class User
     public function connect($username, $password)
     {
         if (self::checkIfRegistered($username, $password)) {
+            echo "ok</br>";
             $user_id = self::getUserId($username);
+            echo "ok</br>";
             self::updateConnectedStatus($user_id, true);
+            echo "ok</br>";
             $user = self::constructUserFromDb($user_id);
+            echo "ok</br>";
             if ($user->getActive()) {
+                echo "ok</br>";
                 return $user;
             } else {
                 return false;
@@ -322,7 +332,7 @@ class User
     public function getNumberGamesPlayed($user_id)
     {
         $cnx = self::init_cnx();
-        $request = $cnx->prepare("SELECT COUNT(*) FROM sae_score WHERE user_id = ?;");
+        $request = $cnx->prepare("SELECT COUNT(*) FROM sae_score NATURAL JOIN sae_game WHERE user_id = ?;");
         $request->bind_param("s", $user_id);
         $request->execute();
         $result = $request->get_result();
@@ -332,10 +342,13 @@ class User
 
     public function getScore($user_id, $type)
     {
+        echo "ok</br>";
         $cnx = self::init_cnx();
-        $request = $cnx->prepare("SELECT $type(score) as score FROM sae_score WHERE user_id = ?;");
+        $request = $cnx->prepare("SELECT $type(score) as score FROM sae_score NATURAL JOIN sae_game WHERE user_id = ?;");
+        echo "ok</br>";
         $request->bind_param("s", $user_id);
         $request->execute();
+        echo "ok</br>";
         $result = $request->get_result();
         $row = $result->fetch_assoc();
         return $row['score'];
@@ -370,6 +383,17 @@ class User
         $this->date_last_cnx = $date_last_cnx;
         $this->active = $active;
         $this->connected = $connected;
+ 
+        $this->nb_game_played = $this->getNumberGamesPlayed($user_id);
+        echo "ok";
+        $this->avg_score = $this->getScore($user_id,'AVG');
+        echo "ok";
+        $this->min_score = $this->getScore($user_id,'MIN');
+        echo "ok";
+        $this->max_score = $this->getScore($user_id,'MAX');
+        echo "ok";
+
+        
     }
 
     private function updateConnectedStatus($user_id, $value)
@@ -383,16 +407,5 @@ class User
             $request->bind_param("ss", date("Y-m-d"), $user_id);
             $request->execute();
         }
-    }
-
-    public function setStats($user_id) {
-        // Récupérer le nombre de parties jouées
-        $this->nb_game_played = $this->getNumberGamesPlayed($user_id);
-        // Récupérer le score moyen
-        $this->avg_score = $this->getScore($user_id, 'AVG');
-        // Récupérer le score minimum
-        $this->min_score = $this->getScore($user_id, 'MIN');
-        // Récupérer le score maximum
-        $this->max_score = $this->getScore($user_id, 'MAX');
     }
 }

@@ -1,11 +1,115 @@
-*, ::after, ::before {
-    box-sizing: border-box;
-    margin: 0;
+html,body{
+    overflow: hidden;
+}
+
+main{
+    display: flex;
+    height: 80%;
+    flex-direction: row;
+    gap: 10px;
+}
+
+main section{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    width: 45vw;
+    gap: 1vh;
+    padding: 3vh 3vw;
+}
+
+main section h1{
+    display: flex;
+    flex: 1;
+    font-size: 3vw;
+    text-align: center;
+    padding: 3px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#infos ul{
+    flex: 9;
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 50%;
+    max-height: 100%;
+    padding: 2vh 1vw;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    gap: 2vh;
+}
+
+#infos ul li{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 5vh;
+    align-items: center;
+}
+
+#infos ul li:first-child{
+    height: 15vh;
+    grid-row: span 3;
+}
+
+#infos ul li h2{
+    flex: 1;
+    justify-self: flex-start;
+    height: 100%;
+    width: auto;
+    align-items: center;
+    display: flex;
+}
+
+#infos ul li img{
+    height: 50%; 
+    justify-self: flex-end;
+    width: auto; 
+    filter: invert(100%);
+    padding: 0 1vw;
+}
+
+#infos ul li #img_compte{
+    max-width: 17vw;
+    height: 100%; 
+    width: auto;
+    margin: auto;
+    filter: none;
     padding: 0;
 }
 
-/* ------------------------------------------- Partie principale de la page ------------------------------------------------------------ */
-main{
-    height: 100%;
-    width: 100%;
+#stats h2{
+    display: flex;
+    flex: 1;
+    font-size: 2vw;
+    text-align: center;
+    padding: 2px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#stats figure{
+    flex: 8;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+}
+
+.highcharts-figure{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 2vw;
+}
+
+.highcharts-background{
+    color: white;
+    fill: rgba(255, 255, 255, 0.70);
 }
