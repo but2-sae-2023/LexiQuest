@@ -1,6 +1,10 @@
 import React from 'react';
 import { useState , useEffect } from 'react';
 import './App.css';
+import './style/header.css';
+import Header from './header';
+import OnePlayer from './OnePlayer';
+import * as Highcharts from "highcharts";
 
 function App() {
   const [value, setValue] = useState("Change me");
@@ -37,10 +41,11 @@ function App() {
 
   return (
     <>
-      <h1>Test</h1>
-      <p>Date : {formatDate(dateTime)}</p>
-      <input value={value} onChange={handleChange} />
-      <p>Value: {value}</p>
+      <Header />
+      <main>
+        <OnePlayer />
+      </main>
+      
     </>
   );
 }
