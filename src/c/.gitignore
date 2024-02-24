@@ -1,0 +1,11 @@
+﻿output.bin
+output.lex
+gameFile.txt
+*.exe
+*.o
+*.out
+*.bin
+*.lex
+*.txt
+.vscode
+.DS_Store

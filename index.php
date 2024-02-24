@@ -1,11 +1,11 @@
 <?php
-include_once("class/user.php");
+include_once("src/class/user.php");
 session_start();
 $_SESSION['backend'] = false;
 if (isset($_SESSION['user'])) {
     if ($_SESSION['user']->checkIfConnected()) {
         echo "aa";
-        header('location: ./backend/home.php'); 
+        header('location: ./src/backend/home.php'); 
     }
 }
 
@@ -15,7 +15,7 @@ if (isset($_POST['user']) && isset($_POST['pwd'])) {
 
     if ($user != false) {
         $_SESSION['user'] = $user;
-        header('location: ./backend/home.php');
+        header('location: ./src/backend/home.php');
     }
 }
 ?>
@@ -24,7 +24,7 @@ if (isset($_POST['user']) && isset($_POST['pwd'])) {
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="src/style/style.css">
     <title>Connexion</title>
 </head>
 
@@ -57,11 +57,11 @@ if (isset($_POST['user']) && isset($_POST['pwd'])) {
             </div>
             <div class="input">
                 <input type="password" name="pwd" id="pwd" placeholder="Mot de passe" required>
-                <p><a href="backend/forgotPwd.php">Mot de passe oublié ?</a></p>
+                <p><a href="src/backend/forgotPwd.php">Mot de passe oublié ?</a></p>
             </div>
             <input type="submit" id="submit" value="SE CONNECTER" />
             <div class="options">
-                <p>Vous n'avez pas de compte ? <br> <a href="backend/signup.php">S'inscrire</a></p>
+                <p>Vous n'avez pas de compte ? <br> <a href="src/backend/signup.php">S'inscrire</a></p>
             </div>
         </form>
     </div>
