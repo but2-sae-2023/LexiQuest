@@ -215,6 +215,7 @@ StaticTree importFromFile(const char *filename)
     fclose(file);
 
     StaticTree st = {nodeArray, nNodes};
+    free(nodeArray);
     return st;
 }
 

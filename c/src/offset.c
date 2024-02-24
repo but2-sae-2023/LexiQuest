@@ -67,12 +67,14 @@ long fileGetOffset( char *word)
             //si la cellule n'a pas d'enfants
             if(cell.firstChild == -1)
             {
+                fclose(file);
                 return -1;
             }
             //si derniere lettre retourne l'offset
             else if(i == strlen(word) - 1)
             {
                 //printf("offset de %s: %ld \n",word, cell.offset);
+                fclose(file);
                 return cell.offset;
             }
             else{            
@@ -82,8 +84,8 @@ long fileGetOffset( char *word)
             
         }
     }
-
-    return -1;
     fclose(file);
+    return -1;
+
 
 }

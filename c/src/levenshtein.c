@@ -77,6 +77,7 @@ double levenshtein(char * S, char * T) {
     int d = get(a, lenS-1, lenT-1);
     int lenMax=max(lenS, lenT);
     double score = (1 - (double)d/lenMax) * 100;
+    free(a.tab);
     //printf("d= %i, lenMax= %i, score= %f\n", d, lenMax, score);
 
    return score;

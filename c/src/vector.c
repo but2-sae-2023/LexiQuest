@@ -70,9 +70,9 @@ double calculSem(char *file_name,char *word1, char *word2){
         return EXIT_FAILURE;
     }
 
-    StaticTree stImported = importFromFile("./output/index.lex");
-    long offset1 = stGetOffset(&stImported, word1);
-    long offset2 = stGetOffset(&stImported, word2);
+
+    long offset1 = fileGetOffset(word1);
+    long offset2 = fileGetOffset(word2);
 
     float vec1[max_size], vec2[max_size];
 
@@ -80,5 +80,6 @@ double calculSem(char *file_name,char *word1, char *word2){
     getVec(f, offset2, max_size, vec2);
 
     double similarity = semantic(vec1, vec2, max_size);
+    fclose(f);
     return similarity;
 }
