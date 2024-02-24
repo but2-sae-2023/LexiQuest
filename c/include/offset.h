@@ -17,4 +17,6 @@ long getElemOfst(StaticTree *st, char lettre, int pos);
 // avoir l'offset d'un mot dans l'arbre statique
 long stGetOffset(StaticTree *st, char mot[]);
 
+long fileGetOffset( char *word);
+
 #endif

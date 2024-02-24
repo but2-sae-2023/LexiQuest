@@ -17,8 +17,8 @@ void StartWords(char *mot1, char *mot2, int argc, char **argv)
     }
     strcpy(mot1, argv[random1]);
     strcpy(mot2, argv[random2]);
-    printf("Mot 1 : %s\n", mot1);
-    printf("Mot 2 : %s\n", mot2);
+    //printf("Mot 1 : %s\n", mot1);
+    //printf("Mot 2 : %s\n", mot2);
 }
 
 
@@ -212,7 +212,7 @@ void add_word(const char *filename, char *dictionary, char *newWord, long offset
     for (int j = 0; j < nMots; j++) {
         free(listeMots[j]);
         free(listeMotsAInserer[j]);
-        free(listeCouples[j]);
+        //free(listeCouples[j]);
         free(listeNewCouples[j]);
     }
 }

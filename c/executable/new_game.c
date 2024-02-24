@@ -62,8 +62,8 @@ int main(int argc, char *argv[])
     char word2[max_w];
     StartWords(word1, word2, argc, argv);
     // recupere leur offset
-    long offset1 = stGetOffset(&stImported, word1);
-    long offset2 = stGetOffset(&stImported, word2);
+    long offset1 = fileGetOffset(word1);
+    long offset2 = fileGetOffset(word2);
     if (offset1 == -1)
     {
         printf("Erreur : Impossible de trouver le premier mot aleatoire '%s' dans le dictionnaire \n", word1);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Fichier gameFile.csv cree\n mot depart: %s \n mot final: %s \n ", word1, word2);
+        printf("Fichier '%s' cree\n mot depart: %s \n mot final: %s \n ",gameFile , word1, word2);
     }
     fclose(file);
     exit(EXIT_SUCCESS);

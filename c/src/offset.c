@@ -44,3 +44,46 @@ long stGetOffset(StaticTree *st, char mot[])
     return offset;
 }
 
+
+long fileGetOffset( char *word)
+{
+    FILE *file = fopen("./output/index.lex", "rb");
+    if (file == NULL)
+    {
+        printf("Unable to open file oui\n");
+        exit(EXIT_FAILURE);
+    }
+    fseek(file, 0, SEEK_SET);
+    ArrayCell cell;
+
+    int i = 0;
+
+
+    while (fread(&cell, sizeof(ArrayCell), 1, file) == 1)
+    {
+        //si elem = lettre
+        if (cell.elem == word[i])
+        {
+            //si la cellule n'a pas d'enfants
+            if(cell.firstChild == -1)
+            {
+                return -1;
+            }
+            //si derniere lettre retourne l'offset
+            else if(i == strlen(word) - 1)
+            {
+                //printf("offset de %s: %ld \n",word, cell.offset);
+                return cell.offset;
+            }
+            else{            
+            fseek(file, cell.firstChild * sizeof(ArrayCell), SEEK_SET);
+            i++;
+            }
+            
+        }
+    }
+
+    return -1;
+    fclose(file);
+
+}
