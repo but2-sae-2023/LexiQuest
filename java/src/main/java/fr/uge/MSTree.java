@@ -19,7 +19,7 @@ import java.util.Stack;
  */
 public class MSTree {
     private final Map<Bridge, Integer> msMap;
-    private final TreeMap<Bridge, Integer> sortedMSMap;
+    private TreeMap<Bridge, Integer> sortedMSMap;
     private String initialWord;
     private String finalWord;
 
@@ -283,7 +283,7 @@ public class MSTree {
      */
     public String writableTree() {
         StringBuilder sb = new StringBuilder();
-        System.out.println("initialWord : " + initialWord + " | finalWord : " + finalWord);
+        // System.out.println("initialWord1 : " + initialWord + " | finalWord : " + finalWord);
         for (Entry<Bridge, Integer> entry : sortedMSMap.entrySet()) {
             sb.append(entry.getKey().firstWord()).append(",").append(entry.getKey().secondWord()).append(",").append(entry.getValue()).append("\n");
         }
@@ -298,6 +298,7 @@ public class MSTree {
     public String writableBestPath() {
         StringBuilder sb = new StringBuilder();
         List<Bridge> bestPath = getBestPath();
+        System.out.println(bestPath.toString() + "-----------------");
         for (Bridge bridge : bestPath) {
             sb.append(bridge.firstWord()).append(",").append(bridge.secondWord()).append(",").append(msMap.get(bridge)).append("\n");
         }

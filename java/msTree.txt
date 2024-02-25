@@ -1,0 +1,3 @@
+sculpture,soleil,22
+serpent,soleil,29
+feu,soleil,35

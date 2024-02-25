@@ -49,13 +49,7 @@ Highcharts.chart('graph-container', {
         marker: {
             radius: 20
         },
-        // data: [{
-        //     from: startWord,
-        //     to: endWord
-        // }, {
-        //     from: endWord,
-        //     to: startWord
-        // }]
-        data : data
+        data : data,
+        nodes : nodes
     }]
 });

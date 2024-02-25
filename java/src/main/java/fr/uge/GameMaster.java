@@ -18,10 +18,11 @@ public record GameMaster() {
      *
      * @param initialWord le mot de départ
      * @param finalWord   le mot d'arrivée
+     * @param gameFile le chemin du gameFile
      */
-    public void launchGame(String initialWord, String finalWord) {
+    public void launchGame(String initialWord, String finalWord, String gameFile) {
         MSTree mst = new MSTree(initialWord, finalWord);
-        addBridges(mst);
+        addBridges(mst, gameFile);
         writeTree(mst);
         writeBestPath(mst);
     }
@@ -76,13 +77,13 @@ public record GameMaster() {
      *
      * @param mst l'arbre auquel on veut ajouter les ponts
      */
-    private void addBridges(MSTree mst) {
+    private void addBridges(MSTree mst, String gameFilePath) {
         // On récupère les ponts de l'ancien arbre
         TreeMap<Bridge, Integer> importedBridges = bridgesFromFile();
         //System.out.println(importedBridges);
 
         // On récupère les mots du fichier "gameFile.txt"
-        List<String> gameFile = read("gameFile.txt");
+        List<String> gameFile = read(gameFilePath);
 
         // On récupère les indexes se trouvant sur la première ligne du fichier "gameFile.txt"
         String[] indexes = gameFile.get(0).split(",");
@@ -132,7 +133,7 @@ public record GameMaster() {
             }
 
             // On récupère le score du pont en prenant le score le plus élevé entre les deux scores de la ligne du fichier "gameFile.txt"
-            int score = Math.max(Integer.parseInt(words[2]), Integer.parseInt(words[3]));
+            int score = Math.max((int) Math.round(Float.parseFloat(words[2])), (int) Math.round(Float.parseFloat(words[3])));
 
             // On ajoute le pont à l'arbre passé en paramètre si le pont n'est pas déjà présent dans l'arbre
             if (bridges == null || bridges.isEmpty() || !bridges.contains(bridge)) {
@@ -171,6 +172,7 @@ public record GameMaster() {
     private void writeBestPath(MSTree mst) {
         String bestPathFile = "bestPath.txt";
         String content = mst.writableBestPath();
+        System.out.println(content);
         Path path = Path.of(bestPathFile);
 
         try {
