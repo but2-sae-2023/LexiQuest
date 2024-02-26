@@ -19,11 +19,11 @@ public record GameMaster() {
      * @param initialWord le mot de départ
      * @param finalWord   le mot d'arrivée
      */
-    public void launchGame(String initialWord, String finalWord) {
+    public void launchGame(String initialWord, String finalWord, String gameid) {
         MSTree mst = new MSTree(initialWord, finalWord);
-        addBridges(mst);
-        writeTree(mst);
-        writeBestPath(mst);
+        addBridges(mst, gameid);
+        writeTree(mst,gameid);
+        writeBestPath(mst,gameid);
     }
 
     /**
@@ -76,13 +76,13 @@ public record GameMaster() {
      *
      * @param mst l'arbre auquel on veut ajouter les ponts
      */
-    private void addBridges(MSTree mst) {
+    private void addBridges(MSTree mst, String gameid) {
         // On récupère les ponts de l'ancien arbre
         TreeMap<Bridge, Integer> importedBridges = bridgesFromFile();
         //System.out.println(importedBridges);
 
         // On récupère les mots du fichier "gameFile.txt"
-        List<String> gameFile = read("gameFile.txt");
+        List<String> gameFile = read("../C/Games/"+ gameid + "-game/gameFile.txt");
 
         // On récupère les indexes se trouvant sur la première ligne du fichier "gameFile.txt"
         String[] indexes = gameFile.get(0).split(",");
@@ -147,8 +147,8 @@ public record GameMaster() {
      *
      * @param mst l'arbre dont on veut écrire le contenu
      */
-    private void writeTree(MSTree mst) {
-        String treeFile = "msTree.txt";
+    private void writeTree(MSTree mst, String gameid) {
+        String treeFile = "../C/Games/"+ gameid + "-game/msTree.txt";
         String content = mst.writableTree();
         Path path = Path.of(treeFile);
 
@@ -168,8 +168,8 @@ public record GameMaster() {
      *
      * @param mst l'arbre dont on veut écrire le meilleur chemin
      */
-    private void writeBestPath(MSTree mst) {
-        String bestPathFile = "bestPath.txt";
+    private void writeBestPath(MSTree mst, String gameid) {
+        String bestPathFile = "../C/Games/"+ gameid + "-game/bestPath.txt";
         String content = mst.writableBestPath();
         Path path = Path.of(bestPathFile);
 
