@@ -58,11 +58,11 @@ echo " $output <br>";
 echo " $returnn <br>";
 
 
+$user_id = $user->getUserId();
 
 
 
-
-    $commandeMaven = "../jdk/usr/lib/jvm/jdk/bin/java -cp ./target/classes fr.uge.Main $mot_depart $mot_arrive 2>&1";
+    $commandeMaven = "../jdk/usr/lib/jvm/jdk/bin/java -cp ./target/classes fr.uge.Main $mot_depart $mot_arrive $user_id 2>&1";
 
     exec($commandeMaven, $outputMaven, $returnMaven);
               
