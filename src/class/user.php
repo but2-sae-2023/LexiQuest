@@ -30,7 +30,7 @@ class User
     public static function init_cnx()
     {
         if (isset($_SESSION['backend'])) {
-            return include './private/cnx.php';
+            return include './src/private/cnx.php';
         }
         return include '../private/cnx.php';
     }
@@ -186,15 +186,11 @@ class User
     public function connect($username, $password)
     {
         if (self::checkIfRegistered($username, $password)) {
-            echo "ok</br>";
             $user_id = self::getUserId($username);
-            echo "ok</br>";
             self::updateConnectedStatus($user_id, true);
-            echo "ok</br>";
             $user = self::constructUserFromDb($user_id);
-            echo "ok</br>";
+            
             if ($user->getActive()) {
-                echo "ok</br>";
                 return $user;
             } else {
                 return false;
@@ -219,6 +215,7 @@ class User
         $request = $cnx->prepare("SELECT username, password FROM sae_user WHERE username = ? AND password = ?");
         $request->bind_param("ss", $username, $password);
         $request->execute();
+        
         $result = $request->get_result();
         return $result->num_rows > 0;
     }
@@ -342,13 +339,10 @@ class User
 
     public function getScore($user_id, $type)
     {
-        echo "ok</br>";
         $cnx = self::init_cnx();
         $request = $cnx->prepare("SELECT $type(score) as score FROM sae_score NATURAL JOIN sae_game WHERE user_id = ?;");
-        echo "ok</br>";
         $request->bind_param("s", $user_id);
         $request->execute();
-        echo "ok</br>";
         $result = $request->get_result();
         $row = $result->fetch_assoc();
         return $row['score'];

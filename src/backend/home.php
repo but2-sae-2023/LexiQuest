@@ -27,11 +27,11 @@
             <h1>Accueil
             </h1>
             <h3><u>Mode de jeu disponible :</u></h3>
-            <a href="onePlayer.php"><button>1 joueur</button></a>
+            <a href="./build/index.html"><button>One player</button></a>
             <!-- <a href="twoPlayer.php"><button>2 joueurs</button></a> -->
             <a href="disconnect.php"><button>Déconnexion</button></a>
         </div>
-        <a href="../src/compte.html">
+        <a href="../compte.html">
             
             <div class="profil-container">
                 <h2><?php echo $user->getUsername()?></h2>

@@ -3,7 +3,7 @@ import React from 'react';
 const Header: React.FC = () => {
   return (
     <header>
-      <img src="../data/img/logo.png" alt="logo de LexiQuest" />
+      <img src="data/img/logo.png" alt="logo de LexiQuest" />
       <h1>LexiQuest</h1>
       <a href="compte.html">
         {/* fetch les données de l'img et du nom d'utilisateur */}
