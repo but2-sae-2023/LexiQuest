@@ -1,11 +1,5 @@
-﻿output.bin
-output.lex
-gameFile.txt
-*.exe
-*.o
+output/*
+games/*
+!games/exemple-game
+dico.bin
 *.out
-*.bin
-*.lex
-*.txt
-.vscode
-.DS_Store
