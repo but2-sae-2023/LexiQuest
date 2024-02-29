@@ -1,9 +1,9 @@
 import React from 'react';
 import { useState , useEffect } from 'react';
-import './App.css';
+import './style/App.css';
 import './style/header.css';
-import Header from './header';
-import OnePlayer from './OnePlayer';
+import Header from './frontend/header';
+import OnePlayer from './frontend/OnePlayer';
 import * as Highcharts from "highcharts";
 
 function App() {
