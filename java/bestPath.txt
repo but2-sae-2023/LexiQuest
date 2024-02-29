@@ -1,2 +1,0 @@
-singe,loup,16
-singe,cochon,22

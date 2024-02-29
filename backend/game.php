@@ -1,37 +1,43 @@
 <?php 
-	session_start();
 
-	// $inputWord = $_POST['user_word'];
-	// echo $inputWord;
+	session_start();
+	include_once("../class/user.php");
+	include_once("../class/game.php");
+
+	$user = $_SESSION['user'];
+
+	$id = 35;
 
 	if($_SESSION['gameRunning'] == "no") {
 		$_SESSION['gameRunning'] = "yes";
-
-		if (file_exists("../java/msTree.txt")) {
-			exec("rm ../java/msTree.txt");
-		}
+		$game = new game();
+		// $game->playGame($user->getUserId(), 50);
 
 		chdir("../c");
-		exec("output/new_game.out output.lex voiture maison immeuble appartement chien loup sculpture plante fleur rose eau feu air terre soleil");
-		[$startWord, $endWord] = explode(",", file("gameFile.txt")[1]);
+		exec("./new_game.out dico.bin $id voiture maison appartement chien loup sculpture plante fleur rose eau feu air terre soleil 2>&1");
+
+		[$startWord, $endWord] = explode(",", file("games/$id-game/gameFile.txt")[1]);
 
 		chdir("../java");
-		exec("java -cp target/classes fr.uge.Main '$startWord' '$endWord' ../c/gameFile.txt");
+		exec("../../libraries/jdk-21.0.2/bin/java -cp target/classes fr.uge.Main '$startWord' '$endWord' $id", $output2);
 	}
 
 	if (isset($_POST['userWord'])) {
 		$userWord = $_POST['userWord'];
 		chdir("../c");
-		exec("output/add_word.out output.lex '$userWord'");
+		exec("./add_word.out dico.bin $id mehdi $userWord 2>&1", $output3);
 
 		chdir("../java");
-		exec("java -cp target/classes fr.uge.Main '$startWord' '$endWord' ../c/gameFile.txt");
+		exec("../../libraries/jdk-21.0.2/bin/java -cp target/classes fr.uge.Main '$startWord' '$endWord' $id", $output2);
+		// exec("output/add_word.out output.lex '$userWord'");
+
+		// chdir("../java");
+		// exec("java -cp target/classes fr.uge.Main '$startWord' '$endWord' ../c/gameFile.txt");
 	}
 
-	chdir("../java");
-	$lines = file('msTree.txt');
-
 	chdir("../c");
+	$lines = file('games/'.$id.'-game/msTree.txt');
+
 	[$startWord, $endWord] = array_map('trim', explode(",", file("gameFile.txt")[1]));
 
 	$data = [];

@@ -366,7 +366,7 @@ class User
 
     // Setters
 
-    private function setFields($user_id, $username, $password, $email, $birth_year, $date_signup, $date_last_cnx, $active, $connected)
+    private function setFields($user_id, $username, $password, $email, $birth_year, $date_signup, $date_last_cnx, $active, $connected, $partieId = null)
     {
         $this->user_id = $user_id;
         $this->username = $username;
