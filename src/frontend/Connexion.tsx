@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Inscription from './Inscription';
+import User from '../class/User';
 
 const RequisMdp = {
     caracteres12: "12 caractères",
@@ -9,7 +9,11 @@ const RequisMdp = {
     chiffre: "Chiffre"
 };
 
-function Connexion() {
+interface ConnexionProps {
+    setUser: (newValue: User | ((prevValue: User) => User)) => void;
+}
+
+const Connexion: React.FC<ConnexionProps> = ({ setUser }) => {
     const [pseudo, setPseudo] = useState('');
     const [mdp, setMdp] = useState('');
 

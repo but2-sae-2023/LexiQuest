@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import User from '../class/User';
 
 const RequisMdp = {
     caracteres12: "12 caractères",
@@ -8,11 +9,19 @@ const RequisMdp = {
     chiffre: "Chiffre"
 };
 
-function Inscription() {
+interface InscriptionProps {
+    setUser: (newValue: User | ((prevValue: User) => User)) => void;
+}
+  
+const Inscription: React.FC<InscriptionProps> = ({ setUser }) => {
     const [pseudo, setPseudo] = useState('');
     const [mdp, setMdp] = useState('');
+    const [mdp2, setMdp2] = useState('');
     const year = new Date().getFullYear();
 
+    /*
+    * Fonction qui vérifie que tous les critères sont respectés
+    */
     const verifierRequisMdp = (mdp:string) => {
         const critereRequis = Object.values(RequisMdp);
         const resultat = critereRequis.map(critere => ({ critere, accepte: false }));
@@ -26,6 +35,16 @@ function Inscription() {
         return resultat;
     };
 
+    /*
+    * Fonction qui vérifie le mot de passe avec double authentification pour envoyer à la base de donnée
+    */
+    function VerifierMotsdePasse() {
+        return mdp === mdp2 && verifierRequisMdp(mdp).every(({ accepte }) => accepte);
+    }
+
+    /*
+    * Fonction qui affiche les requis pour le mot de passe en reprenant chaque critères
+    */
     const afficherRequisMdp = (mdp:string) => {
         const criteres = verifierRequisMdp(mdp);
         return criteres.map(({ critere, accepte }, index) => (
@@ -53,6 +72,7 @@ function Inscription() {
                     <div id='attendu'>
                         {afficherRequisMdp(mdp)}
                     </div>
+                    <input type="password" onChange={(event) => setMdp2(event.target.value)} value={mdp2} name="pwd" id="pwd" placeholder="Confirmer votre mot de passe" required />
                     <p><a href="../backend/forgotPwd.php">Mot de passe oublié ?</a></p>
                 </div>
                 <input type="submit" id="submit" value="S'INSCRIRE" />
