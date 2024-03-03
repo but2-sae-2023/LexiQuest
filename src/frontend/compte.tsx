@@ -4,7 +4,6 @@ import { User } from '../class/User';
 
 function Compte() {
     const [user,setUser] = useState<User>(new User());
-    setUser(User.setUser());
 
     return (
         <>

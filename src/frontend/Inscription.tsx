@@ -72,7 +72,7 @@ const Inscription: React.FC<InscriptionProps> = ({ setUser }) => {
                     <div id='attendu'>
                         {afficherRequisMdp(mdp)}
                     </div>
-                    <input type="password" onChange={(event) => setMdp2(event.target.value)} value={mdp2} name="pwd" id="pwd" placeholder="Confirmer votre mot de passe" required />
+                    <input type="password" onChange={(event) => setMdp2(event.target.value)} value={mdp2} name="pwd" placeholder="Confirmer votre mot de passe" required />
                     <p><a href="../backend/forgotPwd.php">Mot de passe oublié ?</a></p>
                 </div>
                 <input type="submit" id="submit" value="S'INSCRIRE" />
