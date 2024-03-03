@@ -14,12 +14,12 @@ const App = () => {
   };
 
   return (
-    <div>
+    <main>
       {displayConnexion ? <Connexion /> : <Inscription />}
-      <button onClick={handleToggle}>
+      <button id="connexionChange" onClick={handleToggle}>
         {displayConnexion ? "S'inscrire" : "Se connecter"}
       </button>
-    </div>
+    </main>
   );
 };
 
