@@ -3,3 +3,4 @@ games/*
 !games/exemple-game
 dico.bin
 *.out
+*.exe

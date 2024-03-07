@@ -70,6 +70,7 @@ long fileGetOffset( char *word)
                 fclose(file);
                 return -1;
             }
+            
             //si derniere lettre retourne l'offset
             else if(i == strlen(word) - 1)
             {

@@ -4,14 +4,13 @@
 #include "../include/offset.h"
 
 //Recuperer les vecteur d'un mots (il mets les vecteurs dans le tableau M )
-void getVec(FILE *f, long offset, long size, float *M)
+void getVec(FILE *f, int offset, int size, float *M)
 {
     //printf("Offset: %ld\n", offset);  // Affiche l'offset
 
     char mot[10];
     float vec[max_size], len;
     int a;
-    long long b;
     char c[50];
     fseek(f, offset, SEEK_SET);
 
@@ -83,3 +82,22 @@ double calculSem(char *file_name,char *word1, char *word2){
     fclose(f);
     return similarity;
 }
+
+double calculSemFromOffst(char *file_name, int offset1, int offset2){
+   
+    FILE *f = fopen(file_name, "rbc");
+    if (f == NULL)
+    {
+        perror("Error opening file");
+        return EXIT_FAILURE;
+    }
+    float vec1[max_size], vec2[max_size];
+
+    getVec(f, offset1, max_size, vec1);
+    getVec(f, offset2, max_size, vec2);
+    double similarity = semantic(vec1, vec2, max_size);
+    fclose(f);
+    return similarity;
+
+}
+

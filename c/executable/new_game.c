@@ -54,9 +54,6 @@ int main(int argc, char *argv[])
 
     char *file_name = argv[1];
     char *gameID = argv[2];
-
-    // récupération des offsets des mots dans le dictionnaire
-    StaticTree stImported = importFromFile("./output/index.lex");
    
     char word1[max_w];
     char word2[max_w];
