@@ -32,7 +32,6 @@
             <a href="disconnect.php"><button>Déconnexion</button></a>
         </div>
         <a href="../compte.html">
-            
             <div class="profil-container">
                 <h2><?php echo $user->getUsername()?></h2>
                 <div class="profil center">
@@ -40,7 +39,6 @@
                     <div class="profil-body"></div>
                 </div>   
             </div>
-             
         </a>
     </body>
 </html>
