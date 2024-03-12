@@ -10,8 +10,7 @@ Exporting(Highcharts);
 HighchartsNetworkgraph(Highcharts);
 
 function call_C(){
-    jQuery.get('cd ' + process.env.PUBLIC_URL + "/c && gcc ./executable/new_game.c ./src/*.c -o new_game.out -lm");
-    console.log('C call sucess: ' + process.env.PUBLIC_URL + '/c');
+    
 }
 
 function call_Java(){
