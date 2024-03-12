@@ -23,7 +23,7 @@ function call_PHP(){
 
 const OnePlayer: React.FC = () => {
     const chartContainer = useRef<HTMLDivElement>(null);
-    call_C();
+
     useEffect(() => {
         if (chartContainer.current) {
             // Generate the chart options

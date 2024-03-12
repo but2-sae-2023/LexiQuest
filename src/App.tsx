@@ -17,7 +17,7 @@ const App = () => {
     setdisplayConnexion(!displayConnexion);
   };
 
-  /*
+  
   //Utilisateur fictif pour les tests en attendant
   const fictionnalUser = {user_id: 1,
     username: 'toto',
@@ -31,7 +31,7 @@ const App = () => {
     max_score: 0};
 
   user.setUser(fictionnalUser);
-  user.setConnected(true);*/
+  user.setConnected(true);
 
   return (
     <UserContext.Provider value={user}>
