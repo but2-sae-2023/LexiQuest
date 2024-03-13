@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import './item.css';
 import { User } from '../class/User';
 
 function Compte() {
@@ -8,6 +7,7 @@ function Compte() {
     return (
         <>
             <main>
+                <h1>Page de compte</h1>
                 <Infos user={ user } />
                 <Stats user={ user } />
             </main>

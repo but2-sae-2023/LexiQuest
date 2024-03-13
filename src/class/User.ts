@@ -26,7 +26,7 @@ export class User{
         this.min_score = -1;
         this.max_score = -1;
         this.isConnected = false;
-        this.image_path = '../assets/img/default.png';
+        this.image_path = 'assets/img/default.png';
     }
 
     /* Setter de connexion */
