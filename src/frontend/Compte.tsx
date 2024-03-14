@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import './item.css';
+import '../style/compte.css';
 import { User } from '../class/User';
 
 function Compte() {

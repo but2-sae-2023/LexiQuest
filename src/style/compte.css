@@ -5,7 +5,7 @@ html,body{
 main{
     display: flex;
     height: 80%;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
 }
 

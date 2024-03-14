@@ -38,7 +38,7 @@ header h1{
     font-size: 7vh;
 }
 
-header Link{
+header a{
     flex: 1;
     background-color: white;
     border-radius: 10vw;
@@ -53,7 +53,7 @@ header Link{
     padding: 1vh;
 }
 
-header Link img {
+header a img {
     background: #fff;
     background: linear-gradient(173deg, rgba(122,93,252,1) 5%, rgba(111,219,255,1) 29%, rgba(110,225,255,1) 64%, rgba(255,255,255,1) 100%);
     padding: 0;
@@ -63,11 +63,7 @@ header Link img {
     clip-path: circle(35%);
 }
 
-<<<<<<< HEAD
-#nom_compte {
-=======
-header Link h2 {
->>>>>>> origin/dev_loic
+header a h2 {
     display: flex;
     font-size: 2vh;
     height: min-content;
