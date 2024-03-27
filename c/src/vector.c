@@ -58,7 +58,16 @@ double semantic(float *vec1, float *vec2, int size) {
     double dot = dot_product(vec1, vec2, size);
 
     double cos_distance = dot / (norm1 * norm2);
-    return (cos_distance + 1) * 50;  // Normalisation entre 0 et 100
+    //arcos(x)/pie
+    double arcos=1-acos(cos_distance)/M_PI;
+
+    double result= (arcos*arcos*100);
+    //100-result
+    /*
+    arcos=pie -> 100
+    arcos=1 ->
+    */
+    return result;  
 }
 
 double calculSem(char *file_name,char *word1, char *word2){

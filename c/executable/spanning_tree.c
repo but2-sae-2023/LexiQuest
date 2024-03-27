@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../include/vector.h"
 #include "../include/constante.h"
+#include "../include/levenshtein.h"
 
 typedef struct
 {
@@ -13,21 +14,23 @@ typedef struct
 
 typedef struct
 {
+    char *word;
     int offset;
-    Link *links;
 } Sommet;
 
 typedef struct
 {
+    char *word;
     int offset;
     Link maxDistance;
     int isTreated;
 } AllWords;
 
-void updateLinks(Sommet *sommets, AllWords *allWords, int idAMax, int idBMax, double distMax, int *nbSommets)
+void updateLinks(Sommet *sommets, AllWords *allWords, int idBMax, int *nbSommets)
 {
     allWords[idBMax].isTreated = 1;
     sommets[*nbSommets].offset = allWords[idBMax].offset;
+    sommets[*nbSommets].word = allWords[idBMax].word;
 }
 
 int processWords(Sommet *sommets, AllWords *allWords, double *distMax, int nbSommets, long words, FILE *fout)
@@ -35,14 +38,26 @@ int processWords(Sommet *sommets, AllWords *allWords, double *distMax, int nbSom
     double distance;
     int idAMax, idBMax = -1;
 
-    for (int j = 0; j < words; j++)
+    for (int j = 0; j < words ; j++)
     {
         if (allWords[j].isTreated == 0)
         {
-            double distance = calculSemFromOffst("./dico.bin", sommets[nbSommets - 1].offset, allWords[j].offset);
-
+            double semDist = calculSemFromOffst("./dico.bin", sommets[nbSommets - 1].offset, allWords[j].offset); 
+            double levDist= levenshtein(allWords[j].word, sommets[nbSommets - 1].word);
+            distance = semDist;
+            //printf("%s,%s: %f\n",allWords[j].word, sommets[nbSommets - 1].word, semDist);
+            //printf("diff : %f\n", semDist-distance);
+            //MAX des 2
+            if(levDist>semDist){
+                distance=levDist;
+            }
+            else {
+                distance=semDist;
+                }
+                
             if (distance > allWords[j].maxDistance.distance)
             {
+
                 allWords[j].maxDistance.distance = distance;
                 allWords[j].maxDistance.id = nbSommets - 1;
                 allWords[j].maxDistance.offset = allWords[j].offset;
@@ -53,18 +68,16 @@ int processWords(Sommet *sommets, AllWords *allWords, double *distMax, int nbSom
                 *distMax = dist;
                 idAMax = allWords[j].maxDistance.id;
                 idBMax = j;
-
-                // printf("distance max : %f\n", distance);
+                //printf("%s - %s : %f\n", allWords[j].word, sommets[nbSommets - 1].word,dist);
             }
         }
     }
-
     if (idBMax != -1)
     { // Vérifie si un idBMax a été trouvé
-
-        updateLinks(sommets, allWords, idAMax, idBMax, *distMax, &nbSommets);
-        fprintf(fout, "%d,%d,%.2f\n", allWords[idBMax].offset, sommets[idAMax].offset, *distMax);
-        printf("%d,%d,%.2f\n", allWords[idBMax].offset, sommets[idAMax].offset, *distMax);
+        
+        updateLinks(sommets, allWords, idBMax, &nbSommets);
+        fprintf(fout, "%s,%s,%.2f\n", allWords[idBMax].word, sommets[idAMax].word, *distMax);
+        printf("--%s,%s,%.2f--\n", allWords[idBMax].word, sommets[idAMax].word, *distMax);
 
        }
 
@@ -88,37 +101,44 @@ int main(int argc, char *argv[])
     printf("nb mots : %d\n", words);
 
     int a, b;
-    char tempC;
+    char *tempC;
+    tempC=(char *)malloc((int)words * max_w * sizeof(char));
     int nbSommets = 0, nbNonTraites = 0;
     int line = 0;
     Sommet *sommets = (Sommet *)malloc(words * sizeof(Sommet));
     AllWords *allWords = (AllWords *)malloc(words * sizeof(AllWords));
+    char c;
 
     for (b = 0; b < words; b++)
     {
+        
         long offst = ftell(f);
         a = 0;
         while (1)
         {
-            tempC = fgetc(f);
-            if (feof(f) || (tempC == ' '))
+            c = fgetc(f);
+            if (feof(f) || (c == ' '))
                 break;
-            if ((a < max_w) && (tempC != '\n'))
+            if ((a < max_w) && (c != '\n'))
+            {
+                tempC[b * max_w + a] = c;
                 a++;
+            }
         }
         for (a = 0; a < size; a++)
         {
             float *temp;
             fread(&temp, sizeof(float), 1, f);
         }
-
+        allWords[b].word = &tempC[b * max_w];
         allWords[b].offset = offst;
         allWords[b].isTreated = 0;
         allWords[b].maxDistance.distance = 0;
     }
     fclose(f);
-    sommets[0].offset = allWords[0].offset;
-    allWords[0].isTreated = 1;
+    sommets[0].offset = allWords[10].offset;
+    sommets[0].word = allWords[10].word;
+    allWords[10].isTreated = 1;
     nbSommets++;
     double distance, distMax = 0;
     int idAMax, idBMax;
@@ -131,6 +151,7 @@ int main(int argc, char *argv[])
         distMax = 0;
         nbSommets++;
     } while (result != -1);
-    fclose(fout);
+    fclose(fout); 
+    free(tempC);
     return 0;
 }

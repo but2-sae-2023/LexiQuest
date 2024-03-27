@@ -12,7 +12,9 @@ typedef struct {
 typedef wordCell *wordList;
 
 
-void createGameFile(const char *filename, char *word1, char *word2, long offset1, long offset2, double sem_similarity, double lev_similarity);
+
+
+void createGameFile(const char *filename, char *word1, char *word2, long offset1, long offset2, double score);
 
 void add_word(const char *filename, char *dictionary, char *newWord, long offset, char *player);
 

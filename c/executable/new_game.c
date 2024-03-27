@@ -9,22 +9,26 @@
 #include "../include/vector.h"
 #include "../include/levenshtein.h"
 
-
-void minimalTest() {
+void minimalTest()
+{
     char *word1, *word2;
     StaticTree stImported = importFromFile("./output/index.lex");
-    if(stImported.nodeArray == NULL) {
+    if (stImported.nodeArray == NULL)
+    {
         printf("Test minimaliste 'index' : echoue\n");
         exit(EXIT_FAILURE);
     }
-    srand(time(NULL)); 
+    srand(time(NULL));
     word1 = randomWord(&stImported);
     word2 = randomWord(&stImported);
     long offset1 = stGetOffset(&stImported, word1);
     long offset2 = stGetOffset(&stImported, word2);
-    if(offset1 != -1 && offset2 != -1){
+    if (offset1 != -1 && offset2 != -1)
+    {
         printf("Test minimaliste : succes\n");
-    } else {
+    }
+    else
+    {
         printf("Test minimaliste ' recuperer offset': echoue\n");
     }
 }
@@ -45,23 +49,23 @@ int main(int argc, char *argv[])
         printf("where FILE contains word projections in the BINARY FORMAT\n");
         exit(255);
     }
-    else if (argc < 5) {
+    else if (argc < 5)
+    {
         printf("Erreur : Nombre d'arguments insuffisant.\n");
         printf("Utilisation : ./new_game <DICO> <GAMEID> <MOT1> <MOT2> ... \n");
         exit(EXIT_FAILURE);
     }
 
-
     char *file_name = argv[1];
     char *gameID = argv[2];
-   
+
     char word1[max_w];
     char word2[max_w];
     StartWords(word1, word2, argc, argv);
     // recupere leur offset
     long offset1 = fileGetOffset(word1);
     long offset2 = fileGetOffset(word2);
-    if (offset1 == -1)
+    /*if (offset1 == -1)
     {
         printf("Erreur : Impossible de trouver le premier mot aleatoire '%s' dans le dictionnaire \n", word1);
         exit(EXIT_FAILURE);
@@ -71,13 +75,31 @@ int main(int argc, char *argv[])
         printf("Erreur : Impossible de trouver le mot aleatoire '%s' dans le dictionnaire \n", word2);
         exit(EXIT_FAILURE);
     }
-
+*/
     // calcul de la similarité sémantique et de la distance de levenshtein pour en faire la moyenne
-    double sem_similarity = calculSem(file_name, word1, word2);
-    double lev_similarity = levenshtein(word1, word2);
-    double score = (sem_similarity + lev_similarity) / 2;
+    char buffer[128];
+    char command[256];
+    double score=-1;
 
-    //creation du dossier
+    sprintf(command, "python3 solveur.py %s %s", argv[3], argv[4]);
+    FILE *pipe = popen(command, "r");
+    if (!pipe)
+        return -1;
+
+    while (fgets(buffer, sizeof(buffer), pipe) != NULL)
+    {
+        //printf("Output: %s", buffer);
+        score = atof(buffer);
+        printf("Score : %f\n", score);
+        if(score==-1){
+            printf("Erreur : Impossible de trouver la similarité entre les mots '%s' et '%s' \n", word1, word2);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    pclose(pipe);
+
+    // creation du dossier
     char gameDir[128];
     sprintf(gameDir, "./games/%s-game", gameID);
     mkdir(gameDir, 0755);
@@ -86,7 +108,7 @@ int main(int argc, char *argv[])
     char gameFile[128];
     sprintf(gameFile, "./games/%s-game/gameFile.txt", gameID);
 
-    createGameFile(gameFile, word1, word2, offset1, offset2, sem_similarity,lev_similarity);
+    createGameFile(gameFile, word1, word2, offset1, offset2, score);
 
     FILE *file = fopen(gameFile, "r");
     if (file == NULL)
@@ -96,9 +118,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Fichier '%s' cree\n mot depart: %s \n mot final: %s \n ",gameFile , word1, word2);
+        printf("Fichier '%s' cree\n mot depart: %s \n mot final: %s \n ", gameFile, word1, word2);
     }
     fclose(file);
     exit(EXIT_SUCCESS);
 }
-

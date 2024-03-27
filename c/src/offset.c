@@ -22,7 +22,6 @@ long stGetOffset(StaticTree *st, char mot[])
 {
     int a = 1;
     long offset = -1;
-
     // Pour chaque lettre du mot
     for (int i = 0; i < strlen(mot); i++)
     {
