@@ -52,29 +52,21 @@ class User
         include_once("mail.php");
 
         if (self::checkAccount()) {
-            echo "check valide\n";
             if (self::insertUser()) {
-                echo "insert valide\n";
                 if (self::insertToken()) {
-                    echo "token valide\n";
                     if (self::sendConfirmationEmail()) {
-                        echo "mail envoyé\n";
-                        return true;
+                        return "mail sended";
                     } else {
-                        "mail non envoyé";
-                        return false;
+                        return "mail not sended";
                     }
                 } else {
-                    echo "token invalide";
-                    return false;
+                    return "token error";
                 }
             } else {
-                echo "insert invalide";
-                return false;
+                return "insertion error";
             }
         } else {
-            echo "check invalide";
-            return false;
+            return "already exists";
         }
     }
 
@@ -222,30 +214,35 @@ class User
     {
         $cnx = self::init_cnx();
         if (self::checkUsername($username) && $username != $this->username) {
-            echo "<h2 class='red'> Nom d'utilisateur invalide </h2> ";
-            return $this;
+            return 2;
+            // echo "<h2 class='red'> Nom d'utilisateur invalide </h2> ";
+            // return $this;
         }
 
         if (self::checkEmail($email) && $email != $this->email) {
-            echo "<h2 class='red'> Adresse Email invalide invalide </h2> ";
-            return $this;
+            return 2;
+            // echo "<h2 class='red'> Adresse Email invalide invalide </h2> ";
+            // return $this;
         }
 
         if ($password_repeat != $password) {
-            echo "<h2 class='red'> Les mots de passe ne sont pas identiques </h2> ";
-            return $this;
+            return 4;
+            // echo "<h2 class='red'> Les mots de passe ne sont pas identiques </h2> ";
+            // return $this;
         }
 
         if (!self::checkIfRegistered($this->username, $password)) {
-            echo "<h2 class='red'> Mot de passe invalide </h2> ";
-            return $this;
+            return 5;
+            // echo "<h2 class='red'> Mot de passe invalide </h2> ";
+            // return $this;
         }
 
         $request = $cnx->prepare("UPDATE sae_user SET username = ?, email = ?, birth_year = ? WHERE user_id = ?");
         $request->bind_param("ssss", $username, $email, $birth_year, $this->user_id);
         $request->execute();
-        echo "<h2 class='green'> Votre profil a bien été mis à jour </h2> ";
-        return self::constructUserFromDb($this->user_id);
+        // echo "<h2 class='green'> Votre profil a bien été mis à jour </h2> ";
+        self::constructUserFromDb($this->user_id);
+        return 1;
     }
 
     private function checkUsername($username) {

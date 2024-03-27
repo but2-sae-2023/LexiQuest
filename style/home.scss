@@ -1,0 +1,51 @@
+.home {
+    height: 50%;
+
+    .content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+
+        .item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            height: 60%;
+
+            button {
+                font-size: 24px;
+                padding: 16px 32px;
+            }
+        }
+    }
+}
+
+.profile {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--text-font);
+    font-size: 24px;
+    color: white;
+
+    .icon {
+        height: 48px;
+        width: 48px;
+        background: rgba(255, 255, 255, 1) url(../data/img/user.png) center/24px no-repeat;
+        border-radius: 50%;
+        transition: 0.3s;
+
+        &:hover {
+            filter: invert(1);
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+    }
+
+}

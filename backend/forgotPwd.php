@@ -1,7 +1,9 @@
 <?php
-include_once("../class/user.php");
+include_once ("../class/user.php");
 session_start();
-if (isset($_SESSION['backend'])) { unset($_SESSION['backend']); }
+if (isset($_SESSION['backend'])) {
+    unset($_SESSION['backend']);
+}
 if (isset($_POST['user']) && isset($_POST['email'])) {
     $username = htmlspecialchars($_POST['user']);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -13,29 +15,36 @@ if (isset($_POST['user']) && isset($_POST['email'])) {
 ?>
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Mot de passe oublié</title>
-        <link rel="stylesheet" href="../style/style.css">
-    </head>
 
-    <body>
-        <div class="container">
-            <form method="post">
-                <h1>Mot de passe oublié</h1>
+<head>
+    <title>Mot de passe oublié</title>
+    <link rel="stylesheet" href="../style/style.scss">
+    <link rel="stylesheet" href="../style/registration.scss">
+</head>
+
+<body>
+    <div class="container">
+        <div class="wrapper">
+            <form method="POST">
+                <div class="title">
+                    <h1>Mot de passe oublié</h1>
+                    <hr>
+                </div>
                 <?php
-                    if (isset($user)) {
-                        echo "<h3 class='green'>Si un compte dont le nom d'utilisateur et le mail correspondent à ceux indiqués alors un mail vous sera envoyé</h3>";
-                    }
+                if (isset($user)) {
+                    echo "<h3 class='correct'>Si un compte dont le nom d'utilisateur et le mail correspondent à ceux indiqués alors un mail vous sera envoyé</h3>";
+                }
                 ?>
-                <div class="input">
-                    <input type="text" name="user" id="user" placeholder="Nom d'utilisateur" required>
-                </div>
-                <div class="input">
-                    <input type="email" name="email" id="email" placeholder="Adresse e-mail" required>
-                </div>
+
+                <input type="text" name="user" id="user" placeholder="Nom d'utilisateur" required>
+                <input type="email" name="email" id="email" placeholder="Adresse e-mail" required>
                 <input type="submit" id="submit" value="ENVOYER" />
-                <p><a href="../index.php">Retour</a></p>
             </form>
         </div>
-    </body>
+    </div>
+    <a href="../index.php">
+        <div class="back"></div>
+    </a>
+</body>
+
 </html>

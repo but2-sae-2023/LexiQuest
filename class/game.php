@@ -4,11 +4,11 @@ class Game {
 
     private $game_id;
 
-    public function playGame($user_id, $score) {
+    public function playGame($user_id) {
         $cnx = User::init_cnx();
         $game_timestamp = time();
-        $request = $cnx->prepare("INSERT INTO sae_game (game_timestamp, user_id, score) VALUES (?, ?, ?);");
-        $request->bind_param("ssi", $game_timestamp, $user_id, $score);
+        $request = $cnx->prepare("INSERT INTO sae_game (game_timestamp, user_id) VALUES (?, ?);");
+        $request->bind_param("ss", $game_timestamp, $user_id);
         return $request->execute(); 
         
     }
@@ -31,9 +31,9 @@ class Game {
         $request->execute();
     }
 
-    private function getGameId($user_id) {
+    public function getGameId($user_id) {
         $cnx = User::init_cnx();
-        $request = $cnx->prepare("SELECT game_id FROM sae_game WHERE user_id = ?;");
+        $request = $cnx->prepare("SELECT game_id FROM sae_game WHERE user_id = ? ORDER BY game_id DESC;");
         $request->bind_param("s", $user_id);
         $request->execute();
         $result = $request->get_result();
