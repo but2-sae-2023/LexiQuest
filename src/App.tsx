@@ -1,16 +1,11 @@
-import React, { createContext, ReactNode, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import './style/style.css';
 import './style/App.css';
-import './style/header.css';
 import Accueil from './frontend/Accueil';
 import Compte from './frontend/Compte';
-import User from './class/User';
-
-export const UserContext = createContext<User>(new User());
+import UserProvider from './data/UserProvider';
 
 const App = () => {
-  const [displayConnexion, setdisplayConnexion] = useState(true);
- 
   const router = createBrowserRouter([
     {
       path: "/",
@@ -24,7 +19,9 @@ const App = () => {
 
   return (
     <>
-      <RouterProvider router={router} />
+      <UserProvider>
+        <RouterProvider router={router} />
+      </UserProvider>
     </>
   );
 };

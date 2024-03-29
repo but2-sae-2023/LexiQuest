@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
-import { UserContext } from "./Accueil";
+import { useContext, useState } from 'react';
 import '../style/App.css';
-
+import ChooseMod from './ChooseMod';
+import { UserContext } from '../data/UserProvider';
 
 const StartButton = () => {
-    const user = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
+    const [startParty, setStartParty ] = useState(false);
 
     return (
         <>
-            <button>Commencer la partie</button>
+            {!startParty ? <><h1>Bonjour { user.getUsername() }</h1><button onClick={ () => setStartParty(true) }>Lancer une partie</button></> : <ChooseMod />}
         </>
     );
 };

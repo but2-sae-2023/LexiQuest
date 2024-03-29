@@ -2,14 +2,14 @@ html,body{
     overflow: hidden;
 }
 
-main{
+.compte_contener{
     display: flex;
     height: 80%;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
 }
 
-main section{
+.compte_contener section{
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -19,7 +19,7 @@ main section{
     padding: 3vh 3vw;
 }
 
-main section h1{
+.compte_contener section h1{
     display: flex;
     flex: 1;
     font-size: 3vw;

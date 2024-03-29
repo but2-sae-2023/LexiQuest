@@ -1,10 +1,8 @@
-import React, { useContext } from 'react';
-import { UserContext } from "../App";
 import '../style/App.css';
 
 
 const StartButton = () => {
-    const user = useContext(UserContext);
+    //useContext(UserContext);
 
     return (
         <>

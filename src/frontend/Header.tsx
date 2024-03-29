@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
-import { UserContext } from "./Accueil";
 import '../style/header.css';
 import logo from '../data/img/logo.png';
+import { UserContext } from '../data/UserProvider';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
-  const user = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const imagePath = user.getImagePath();
 
@@ -14,10 +15,10 @@ const Header = () => {
         <img src={logo} alt="logo de LexiQuest" />
         <h1>LexiQuest</h1>
 
-        <a href="Compte.tsx">
+        <Link to="/compte">
           <img id='img_compte' src={imagePath} alt="img_profile" />
           <h2 id='nom_compte'>{user.getUsername()}</h2>
-        </a>
+        </Link>
         
       </header>
     </>

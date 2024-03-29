@@ -3,7 +3,6 @@ import * as Highcharts from "highcharts";
 import HighchartsNetworkgraph from 'highcharts/modules/networkgraph';
 
 import Exporting from 'highcharts/modules/exporting';
-import jQuery from 'jquery';
 
 Exporting(Highcharts);
 

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import User from '../class/User';
+import React, { useContext, useState } from 'react';
 
 const RequisMdp = {
     caracteres12: "12 caractères",
@@ -9,11 +8,9 @@ const RequisMdp = {
     chiffre: "Chiffre"
 };
 
-interface InscriptionProps {
-    setUser: (newValue: User | ((prevValue: User) => User)) => void;
-}
   
-const Inscription: React.FC<InscriptionProps> = ({ setUser }) => {
+const Inscription: React.FC = () => {
+    //const { user, setUser } = useContext(UserContext);
     const [pseudo, setPseudo] = useState('');
     const [mdp, setMdp] = useState('');
     const [mdp2, setMdp2] = useState('');

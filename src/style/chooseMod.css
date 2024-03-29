@@ -1,0 +1,38 @@
+.chooseMod_container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2vh 5vw;
+}
+
+.chooseMod_container button{
+    display: flex;
+    text-align: center;
+    width: auto;
+    height: 30vh;
+    padding: 1vh 1vw;
+    flex-direction: column;
+}
+
+.chooseMod_container button{
+    display: flex;
+    text-align: center;
+    width: 30vh;
+    height: 30vh;
+    padding: 1vh 1vw;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.chooseMod_container button img{
+    width: fit-content;
+    height: 80%;
+}
+
+.chooseMod_container button h1{
+    font-size: 1.7rem;
+    text-align: center;
+    color: black;
+    font-weight: bold;
+}

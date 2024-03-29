@@ -18,7 +18,7 @@
 /* Styling the body */
 body {
     /* Applying a linear gradient background */
-    background: linear-gradient(108deg, #C31432 0%, #240B36 100%);
+    background: linear-gradient(108deg, #0066FF 0%, #0D005C 100%);
     /* Centering content vertically and horizontally */
     display: flex;
     flex-direction: column;
