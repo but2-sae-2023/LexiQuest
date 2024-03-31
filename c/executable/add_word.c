@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
     char *player = argv[3];
     char *word = argv[4];
 
-    StaticTree stImported = importFromFile("./output/index.lex");
     long offset = fileGetOffset(word);
 
     if (offset == -1)

@@ -1,14 +1,4 @@
 <?php
 
-chdir("../c/games");
-// exec("ls -l 2>&1", $output);
-
-system("rm -rf *"); 
-
-chdir("../../java");
-exec("ls -l 2>&1", $output);
-system("rm -r target/");
-
-echo "<pre>";
+exec("rm -r ../c/games/*", $output);
 print_r($output);
-echo "</pre>";

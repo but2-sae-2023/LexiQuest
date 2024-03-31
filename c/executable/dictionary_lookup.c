@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     if (argc == 1)
     {
         printf("Auteurs : Equipe non_alter_3 : \nAmaury BOOMS\nEnzo LETOCART\nLaxhan PUSHPAKUMAR\nLoic MAURITIUS\nRabah CHERAK\nThivakar JEYASEELAN\n ");
-        minimalTest();
+        //minimalTest();
         exit(255);
     }
     else if (argc == 2 && strcmp("--help", argv[1]) == 0)
@@ -37,15 +37,11 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    char *word = argv[1];
-    StaticTree stImported = importFromFile("./output/index.lex");
-    if (stImported.nodeArray == NULL)
-    {
-        printf("Erreur : Impossible d'importer le fichier './output/index.lex'\n");
-        exit(EXIT_FAILURE);
-    }
+    
 
-    long o = stGetOffset(&stImported, word);
+    char *word = argv[1];
+    
+    long o = fileGetOffset(word);
     if (o == -1)
     {
         printf("Erreur : Le mot '%s' n'a pas été trouvé dans le dictionnaire\n", word);

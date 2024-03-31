@@ -12,5 +12,5 @@
         }
     } else {
         header('location: ../index.php');
-    }F
+    }
 ?>

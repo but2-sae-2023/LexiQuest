@@ -86,6 +86,8 @@ input:not(input[type='submit']) {
         font-family: var(--title-font);
         padding: 16px;
         white-space: nowrap;
+        user-select: none;
+        text-align: center;
     }
 
     hr {
@@ -106,4 +108,31 @@ input:not(input[type='submit']) {
 h3 {
     font-size: 16px;
     white-space: nowrap;
+}
+
+.logo {
+    position: absolute;
+    top: 0;
+    margin: 2vw;
+    z-index: 1;
+    
+    img {
+        width: 5vw;
+        height: 5vw;
+        object-fit: contain;
+    }
+}
+
+.right {
+    right: 0;
+}
+
+.left {
+    left: 0;
+}
+
+.center {
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 64px;
 }

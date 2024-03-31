@@ -17,4 +17,3 @@ document.getElementById("form").addEventListener("submit", function(event) {
 	xhr.send(data);
 	return false;
 });
-

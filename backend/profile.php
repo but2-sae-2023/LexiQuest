@@ -27,6 +27,9 @@ if (isset($_SESSION['user'])) {
 </head>
 
 <body>
+    <div class="logo center">
+        <img src="../data/img/logo.png" alt="logo" />
+    </div>
     <div class="container">
         <div class="username"><?php echo $user->getUsername() ?></div>
         <div class="profile">
@@ -39,7 +42,6 @@ if (isset($_SESSION['user'])) {
                     </h1>
                     <hr>
                 </div>
-
                 <div class="item">Adresse email<span><?php echo $user->getEmail()?></span></div>
                 <div class="item">Année de naissance<span><?php echo $user->getBirthYear()?></span></div>
                 <?php 

@@ -22,7 +22,6 @@ long stGetOffset(StaticTree *st, char mot[])
 {
     int a = 1;
     long offset = -1;
-
     // Pour chaque lettre du mot
     for (int i = 0; i < strlen(mot); i++)
     {
@@ -70,6 +69,7 @@ long fileGetOffset( char *word)
                 fclose(file);
                 return -1;
             }
+            
             //si derniere lettre retourne l'offset
             else if(i == strlen(word) - 1)
             {

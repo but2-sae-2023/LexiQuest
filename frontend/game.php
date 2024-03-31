@@ -29,8 +29,8 @@ if (isset($_SESSION['user'])) {
 <body>
     <div class="container">
         <div class="wrapper">
-            <form method="POST">
-                <input type="text" name="user-word" placeholder="Insérez votre mot">
+            <form method="POST" id="form">
+                <input type="text" name="userWord" placeholder="Insérez votre mot">
                 <input type="submit" id="submit-word" name="submit-word" value="" />
             </form>
         </div>
@@ -38,22 +38,59 @@ if (isset($_SESSION['user'])) {
         <div class="game">
 
         </div>
-        <!-- <div id="graph-container"></div>
+        <div id="graph-container"></div>
         <script>
-            getData('game.php').then(data => {
-                window.data = data.data;
-                window.nodes = data.nodes;
-                console.log(data);
-                const script = document.body.appendChild(document.createElement('script'));
-                script.src = '../script/graphic.js';
-            });
+            let form = document.getElementById('form');
+            form.addEventListener('submit', event => {
+                event.preventDefault();
 
-            sendData('game.php', 'form');
-        </script> -->
+                var data = new FormData(form);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '../backend/game.php');
+                xhr.onload = function () {
+                    if (xhr.status == 200) {
+                        console.log(data);
+                        window.location.reload();
+                    }
+                }
+                xhr.send(data);
+            })
+        </script>
+        <script>
+            async function fetchData() {
+                const response = await fetch('../backend/game.php');
+                const data = await response.json();
+                window.data = data.content;
+                window.nodes = data.nodes;
+                window.words = data.words;
+                let script = document.body.appendChild(document.createElement('script'));
+                script.src = '../script/graphic.js';
+                return window.words;
+            }
+        </script>
     </div>
     <a href="../frontend/home.php">
         <div class="back"></div>
     </a>
+    <div class="words">
+    </div>
+    <script>
+            window.addEventListener('load', async () => {
+                try {
+                    const words = await fetchData();
+                    const parentDiv = document.querySelector('.words');
+                    words.forEach(element => {
+                        const div = document.createElement('div');
+                        div.className = 'item';
+                        div.textContent = element;
+                        parentDiv.appendChild(div);
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            });
+        </script>
 </body>
 
 </html>

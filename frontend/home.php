@@ -1,7 +1,6 @@
 <?php
 include_once ("../class/user.php");
 session_start();
-
 if (isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
     if (!$user->checkIfConnected()) {
@@ -10,6 +9,8 @@ if (isset($_SESSION['user'])) {
 } else {
     header('location: ../index.php');
 }
+
+$_SESSION['gameRunning'] = false;
 
 ?>
 <!DOCTYPE html>
@@ -25,6 +26,9 @@ if (isset($_SESSION['user'])) {
 </head>
 
 <body>
+    <div class="logo left">
+        <img src="../data/img/logo.png" alt="logo" />
+    </div>
     <div class="container">
         <div class="home">
             <div class="content">

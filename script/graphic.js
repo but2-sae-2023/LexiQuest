@@ -14,7 +14,7 @@ Highcharts.chart('graph-container', {
 
     plotOptions: {
         networkgraph: {
-            draggable: false,
+            draggable: true,
             layoutAlgorithm: {
                 enableSimulation: true
             }

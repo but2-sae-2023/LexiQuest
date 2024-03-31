@@ -27,6 +27,9 @@ if (isset($_POST['user']) && isset($_POST['pwd'])) {
 </head>
 
 <body>
+    <div class="logo left">
+        <img src="data/img/logo.png" alt="logo" />
+    </div>
     <div class="container">
         <div class="wrapper">
             <form method="post">

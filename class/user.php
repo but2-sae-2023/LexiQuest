@@ -140,7 +140,7 @@ class User
                 $request = $cnx->prepare("UPDATE sae_user SET password = ? WHERE user_id = ?");
                 $request->bind_param("ss", $newPwd, $user_id);
                 $request->execute();
-            }
+            }   
             
             $request = $cnx->prepare("DELETE FROM sae_token WHERE token = ?");
             $request->bind_param("s", $token);
@@ -155,7 +155,7 @@ class User
     }
 
     // filled fields with db informations
-    private function constructUserFromDb($user_id)
+    public function constructUserFromDb($user_id)
     {
         $cnx = self::init_cnx();
         $request = $cnx->prepare("SELECT * FROM sae_user WHERE user_id = ?");
@@ -213,36 +213,60 @@ class User
     public function updateUser($username, $email, $birth_year, $password, $password_repeat)
     {
         $cnx = self::init_cnx();
-        if (self::checkUsername($username) && $username != $this->username) {
-            return 2;
-            // echo "<h2 class='red'> Nom d'utilisateur invalide </h2> ";
-            // return $this;
-        }
 
-        if (self::checkEmail($email) && $email != $this->email) {
-            return 2;
-            // echo "<h2 class='red'> Adresse Email invalide invalide </h2> ";
-            // return $this;
-        }
+        $username = htmlspecialchars($username, ENT_QUOTES, 'UTF-8');
+        $email = filter_var($email, FILTER_VALIDATE_EMAIL);
 
-        if ($password_repeat != $password) {
+        $new_username = $username != null;
+        $new_email = $email != null;
+        $new_birth_year = $birth_year != null;
+        $changes_count = $new_username + $new_email + $new_birth_year;
+
+        if ($password == $password_repeat && $password != null && $password_repeat != null) {
+            if (hash("sha256", $password) == $this->password) {
+                switch($changes_count) {
+                    case 0:
+                        return 1    ;
+                    default:
+                        if ($new_username) {
+                            if (self::checkUsername($username)) {
+                                return 2;
+                            } else {
+                                $request = $cnx->prepare("UPDATE sae_user SET username = ? WHERE user_id = ?");
+                                $request->bind_param("ss", $username, $this->user_id);
+                                $request->execute();
+                                $this->username = $username;
+                            }
+                        } 
+                        if ($new_email) {
+                            if (self::checkEmail($email)) {
+                                return 2;
+                            } else {
+                                $request = $cnx->prepare("UPDATE sae_user SET email = ?, old_email = ? WHERE user_id = ?");
+                                $request->bind_param("ss", $email, $this->email, $this->user_id);
+                                $request->execute();
+                                $this->email = $email;
+                            }
+                        } 
+                        if ($new_birth_year) {
+                            if ($birth_year < 1900 || $birth_year > date("Y")) {
+                                return 6;
+                            } else {
+                                $request = $cnx->prepare("UPDATE sae_user SET birth_year = ? WHERE user_id = ?");
+                                $request->bind_param("ss", $birth_year, $this->user_id);
+                                $request->execute();
+                                $this->birth_year = $birth_year;
+                            }
+                        }
+                }
+                self::constructUserFromDb($this->user_id);
+                return 1;
+            } else {
+                return 5;
+            }
+        } else {
             return 4;
-            // echo "<h2 class='red'> Les mots de passe ne sont pas identiques </h2> ";
-            // return $this;
         }
-
-        if (!self::checkIfRegistered($this->username, $password)) {
-            return 5;
-            // echo "<h2 class='red'> Mot de passe invalide </h2> ";
-            // return $this;
-        }
-
-        $request = $cnx->prepare("UPDATE sae_user SET username = ?, email = ?, birth_year = ? WHERE user_id = ?");
-        $request->bind_param("ssss", $username, $email, $birth_year, $this->user_id);
-        $request->execute();
-        // echo "<h2 class='green'> Votre profil a bien été mis à jour </h2> ";
-        self::constructUserFromDb($this->user_id);
-        return 1;
     }
 
     private function checkUsername($username) {

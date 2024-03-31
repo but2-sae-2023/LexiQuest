@@ -4,11 +4,6 @@
 #include "../include/constante.h"
 #include "../include/tree.h"
 
-#include <stdio.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <pwd.h>
-
 // Choisir deux mots au hasard parmi ceux entrés en paramètre
 void StartWords(char *mot1, char *mot2, int argc, char **argv)
 {
@@ -26,7 +21,7 @@ void StartWords(char *mot1, char *mot2, int argc, char **argv)
 }
 
 // Crée un fichier de partie gameFile.csv qui contients 2 mots de départs, leurs offsets et la distance entre les 2 mots
-void createGameFile(const char *filename, char *word1, char *word2, long offset1, long offset2, double sem_similarity, double lev_similarity)
+void createGameFile(const char *filename, char *word1, char *word2, long offset1, long offset2, double score)
 {
     FILE *file = fopen(filename, "w+");
     if (file == NULL)
@@ -39,7 +34,7 @@ void createGameFile(const char *filename, char *word1, char *word2, long offset1
     fprintf(file, "%s,%s\n", word1, word2);
     fprintf(file, "%s,depart,%ld\n", word1, offset1);
     fprintf(file, "%s,fin,%ld\n", word2, offset2);
-    fprintf(file, "%s,%s,%.2f,%.2f\n", word1, word2, lev_similarity, sem_similarity);
+    fprintf(file, "%s,%s,%.2f\n", word1, word2, score);
 
     fclose(file);
 }
@@ -185,7 +180,7 @@ void add_word(const char *filename, char *dictionary, char *newWord, long offset
         fprintf(file, "%s", listeMotsAInserer[j]);
         // printf("Je suis là 5\n");
     }
-    char *newWordWithOffset = malloc(sizeof(newWord) + sizeof("joueur1") + 10);
+    char *newWordWithOffset = malloc(sizeof(newWord) + sizeof(player) + 10);
     sprintf(newWordWithOffset, "%s,%s,%ld", newWord, player, offset); // offset
 
     // On écrit le nouveau mot avec son offset
@@ -205,22 +200,38 @@ void add_word(const char *filename, char *dictionary, char *newWord, long offset
     // On met le curseur à la fin du fichier
     fseek(file, 0, SEEK_END);
 
+    char buffer[128];
+    char command[256];
+    char score[128];
+
     // Affichage de la liste de couples
     // printf("Affichage de la liste de couples\n");
     for (int j = 0; j < nMots; j++)
     {
         // printf("Dans la boucle for : %s\n", listeMots[j]);
-        double semanticScore = calculSem(dictionary, newWord, listeMots[j]);
-        double levenshteinScore = levenshtein(newWord, listeMots[j]);
-        listeNewCouples[j] = malloc(sizeof(newWord) + sizeof(listeMots[j]) + sizeof(levenshteinScore) + sizeof(semanticScore));
-        sprintf(listeNewCouples[j], "%s,%s,%lf,%lf", newWord, listeMots[j], levenshteinScore, semanticScore);
+
+        sprintf(command, "python3 solveur.py %s %s", newWord, listeMots[j]);
+        FILE *pipe = popen(command, "r");
+        if (!pipe)
+            EXIT_FAILURE;
+
+        if (fgets(buffer, sizeof(buffer), pipe) != NULL)
+        {
+            buffer[strcspn(buffer, "\n")] = '\0';
+            strcpy(score, buffer);
+            // printf("Score : %s\n", score);
+        }
+
+        pclose(pipe);
+
+        listeNewCouples[j] = malloc(strlen(newWord) + strlen(listeMots[j]) + strlen(score) + 3);
+        sprintf(listeNewCouples[j], "%s,%s,%s", newWord, listeMots[j], score);
         fprintf(file, "%s\n", listeNewCouples[j]);
     }
-
     fclose(file);
 
     // Libération de la mémoire
-    for (int j = 0; j <= nMots +1; j++)
+    for (int j = 0; j < nMots; j++)
     {
         free(listeMots[j]);
         free(listeMotsAInserer[j]);
@@ -229,5 +240,4 @@ void add_word(const char *filename, char *dictionary, char *newWord, long offset
     }
     free(dup);
     free(newWordWithOffset);
-    
 }
