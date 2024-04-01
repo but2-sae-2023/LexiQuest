@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
         //printf("Output: %s", buffer);
         score = atof(buffer);
         printf("Score : %f\n", score);
-        if(score==-1) {
+        if(score==-1){
             printf("Erreur : Impossible de trouver la similarité entre les mots '%s' et '%s' \n", word1, word2);
             exit(EXIT_FAILURE);
         }

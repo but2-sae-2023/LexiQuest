@@ -1,16 +1,9 @@
 table {
-    border-collapse: collapse;
     font-size: 24px;
-    width: 80%;
-
-    th, td {
-        padding: 8px;
-        border: 1px solid white;
-        text-align: left;
-    }
 
     th {
         background-color: rgba(0, 0, 0, 0.5);
+        height: 64px;
     }
 
     tr:hover > td {

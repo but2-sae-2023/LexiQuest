@@ -81,6 +81,7 @@ input:not(input[type='submit']) {
 }
 
 .title {
+    width: fit-content;
     h1 {
         font-size: 48px;
         font-family: var(--title-font);
@@ -103,6 +104,11 @@ input:not(input[type='submit']) {
 
 .correct {
     color: rgb(72, 255, 0);
+}
+
+.warning {
+    color: rgb(255, 217, 0);
+
 }
 
 h3 {

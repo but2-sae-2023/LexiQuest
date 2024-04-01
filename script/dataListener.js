@@ -2,6 +2,7 @@ async function getData(file) {
 	try {
 		const response = await fetch('../backend/' + file);
 		const data = await response.json();
+		console.log(data);
 		return data;
 	} catch (error) {
 		console.error(error);

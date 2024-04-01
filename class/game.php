@@ -31,7 +31,7 @@ class Game {
         $request->execute();
     }
 
-    public function getId($user_id) {
+    public function getGameId($user_id) {
         $cnx = User::init_cnx();
         $request = $cnx->prepare("SELECT game_id FROM sae_game WHERE user_id = ? ORDER BY game_id DESC;");
         $request->bind_param("s", $user_id);

@@ -9,8 +9,8 @@ if (isset($_POST['user']) && isset($_POST['email'])) {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $user = new User();
     $user->forgotPwd($username, $email);
+    // var_dump($email);
     $_SESSION["forgotPwd"] = true;
-    header("Location: ../index.php");
 }
 ?>
 <!DOCTYPE html>
@@ -35,10 +35,9 @@ if (isset($_POST['user']) && isset($_POST['email'])) {
                     echo "<h3 class='correct'>Si un compte dont le nom d'utilisateur et le mail correspondent à ceux indiqués alors un mail vous sera envoyé</h3>";
                 }
                 ?>
-
                 <input type="text" name="user" id="user" placeholder="Nom d'utilisateur" required>
                 <input type="email" name="email" id="email" placeholder="Adresse e-mail" required>
-                <input type="submit" id="submit" value="ENVOYER" />
+                <input type="submit" id="submit" value="ENVOYER"/>
             </form>
         </div>
     </div>

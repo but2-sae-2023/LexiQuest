@@ -1,0 +1,22 @@
+.rules {
+    .content {
+        font-size: 24px;
+        gap: 16px;
+        margin: 100px;
+        p {
+            text-align: center;
+        }
+    }
+}
+
+
+* {
+    overflow: hidden;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

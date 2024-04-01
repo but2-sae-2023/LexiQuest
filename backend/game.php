@@ -24,16 +24,16 @@ if (!$_SESSION['gameRunning']) {
 	$game = new game();
 	$game->playGame($user_id);
 
-	$id = $game->getId($user_id);
+	$id = $game->getGameId($user_id);
 	$_SESSION['gameId'] = $id;
 
 	chdir("../c");
-	exec("./new_game.out dico.bin $id janvier février mars avril mai juin juillet août septembre octobre novembre décembre 2>&1", $output);
+	exec("./new_game.out dico.bin $id fleurs leur 2>&1", $output);
 
 	[$startWord, $endWord] = explode(",", file("games/$id-game/gameFile.txt")[1]);
 
 	chdir("../java");
-	exec("java -cp target/classes fr.uge.Main '$startWord' '$endWord' $id");
+	exec("../../libraries/jdk-21.0.2/bin/java -cp target/classes fr.uge.Main '$startWord' '$endWord' $id");
 
 	$nodes[] = ["id" => $startWord, "color" => "#567fe8"];
 	$nodes[] = ["id" => trim($endWord), "color" => "#e8a956"];
@@ -49,7 +49,7 @@ if (isset($_POST['userWord'])) {
 	[$startWord, $endWord] = explode(",", file("games/$id-game/gameFile.txt")[1]);
 
 	chdir("../java");
-	exec("java -cp target/classes fr.uge.Main '$startWord' '$endWord' $id");
+	exec("../../libraries/jdk-21.0.2/bin/java -cp target/classes fr.uge.Main '$startWord' '$endWord' $id");
 }
 
 chdir("../c");

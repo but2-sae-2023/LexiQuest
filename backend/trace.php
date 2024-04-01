@@ -33,23 +33,30 @@ $result = $cnx->query($sql);
     <title>Trace</title>
     <link rel="stylesheet" href="../style/style.scss">
     <link rel="stylesheet" href="../style/trace.scss">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../style/dataTables.css" />
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Heure</th>
-                <th>IP</th>
-                <th>ID Utilisateur</th>
-                <th>Nom d'utilisateur</th>
-                <th>Action</th>
-            </tr>
-            <?php
-            if ($result) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>
+        <table id="myTable" class="display">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Heure</th>
+                    <th>IP</th>
+                    <th>ID Utilisateur</th>
+                    <th>Nom d'utilisateur</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($result) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>
                             <td>{$row['date']}</td>
                             <td>{$row['hour']}</td>
                             <td>{$row['ip']}</td>
@@ -57,16 +64,21 @@ $result = $cnx->query($sql);
                             <td>{$row['username']}</td>
                             <td>{$row['action']}</td>
                           </tr>";
+                    }
+                    $result->free();
                 }
-                $result->free();
-            }
-            $cnx->close();
-            ?>
+                $cnx->close();
+                ?>
+            </tbody>
         </table>
     </div>
     <a href="../frontend/home.php">
         <div class="back"></div>
     </a>
+    <script>
+        let table = new DataTable('#myTable', {
+        });
+    </script>
 </body>
 
 </html>

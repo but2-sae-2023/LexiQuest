@@ -1,5 +1,4 @@
 <?php
-
 include_once ("../class/user.php");
 session_start();
 if (isset($_SESSION['backend'])) {
@@ -32,6 +31,17 @@ if (isset($_SESSION['user'])) {
                 $changes_info[] = $_POST['password-repeat'];
                 $status = $user->updateUser($changes_info[0], $changes_info[1], $changes_info[2], $changes_info[3], $changes_info[4]);
                 $_SESSION['user'] = $user;
+                $pwd_status = -1;
+            }
+
+            if (isset($_POST["new-password"]) && isset($_POST["new-password-repeat"]) && isset($_POST["old-password"])) {
+                $changes_info = array();
+                $changes_info[] = $_POST["new-password"];
+                $changes_info[] = $_POST["new-password-repeat"];
+                $changes_info[] = $_POST["old-password"];
+                $pwd_status = $user->updatePassword($changes_info[0], $changes_info[1], $changes_info[2]);
+                $_SESSION['user'] = $user;
+                $status = -1;
             }
         }
     }
@@ -48,6 +58,7 @@ if (isset($_SESSION['user'])) {
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../style/style.scss" />
     <link rel="stylesheet" href="../style/registration.scss">
+    <link rel="stylesheet" href="../style/profile.scss">
 </head>
 
 <body>
@@ -59,10 +70,13 @@ if (isset($_SESSION['user'])) {
                     <hr>
                 </div>
                 <?php
-                if ($status) {
+                if (isset($status)) {
                     $msg = "Un e-mail de confirmation vient d'être envoyé à votre adresse e-mail.";
                     $class = "error";
                     switch ($status) {
+                        case -1:
+                            $msg = "";
+                            break;
                         case 2:
                             $msg = "Nom d'utilisateur ou adresse email invalide";
                             break;
@@ -89,6 +103,51 @@ if (isset($_SESSION['user'])) {
                 <input type="password" name="password" placeholder="Mot de passe requis pour confirmer la modification"
                  required/>
                 <input type="password" name="password-repeat" placeholder="Reconfirmez votre mot de passe" required/>
+                <input type="submit" value="Mettre à jour le profil" />
+            </form>
+        </div>
+        <div class="wrapper">
+            <form method="POST">
+                <div class="title">
+                    <h1>Mot de passe</h1>
+                    <hr>
+                </div>
+                <?php
+                if (isset($pwd_status)) {
+                    $msg = "Un e-mail de confirmation vient d'être envoyé à votre adresse e-mail.";
+                    $class = "error";
+                    switch ($pwd_status) {
+                        case -1:
+                            $msg = "";
+                            break;
+                        case 1:
+                            $class = "warning";
+                            $msg = "Le nouveau mot de passe est identique à l'ancien";
+                            break;
+                        case 2:
+                            $msg = "Nom d'utilisateur ou adresse email invalide";
+                            break;
+                        case 3:
+                            $msg = "Le nouveau mot de pase ne respecte pas les critères de sécurité";
+                            break;
+                        case 4:
+                            $msg = "Les mots de passe ne sont pas identiques";
+                            break;
+                        case 5:
+                            $msg = "Ancien mot de passe invalide";
+                            break;
+                        default:
+                            $class = "correct";
+                            break;
+                    }
+                    echo "<h3 class=$class> $msg </h3>";
+                }
+                ?>
+                <input type="password" name="new-password" placeholder="Nouveau mot de passe"
+                 required/>
+                <input type="password" name="new-password-repeat" placeholder="Confirmez votre nouveau mot de passe" required/>
+                <input type="password" name="old-password" placeholder="Ancien mot de passe requis pour confirmer la modification"
+                 required/>
                 <input type="submit" value="Mettre à jour le profil" />
             </form>
         </div>

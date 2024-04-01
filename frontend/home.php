@@ -1,6 +1,7 @@
 <?php
 include_once ("../class/user.php");
 session_start();
+$_SESSION['gameRunning'] = false;
 if (isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
     if (!$user->checkIfConnected()) {
@@ -9,8 +10,6 @@ if (isset($_SESSION['user'])) {
 } else {
     header('location: ../index.php');
 }
-
-$_SESSION['gameRunning'] = false;
 
 ?>
 <!DOCTYPE html>
@@ -38,6 +37,7 @@ $_SESSION['gameRunning'] = false;
                 </div>
                 <div class="item">
                     <a href="game.php"><button>1 joueur</button></a>
+                    <a href="../backend/rules.php"><button>Règles</button></a>
                     <a href="../backend/trace.php"><button>Page de traces </button></a>
                     <a href="../backend/disconnect.php"><button>Déconnexion</button></a>
                 </div>

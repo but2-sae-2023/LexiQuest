@@ -2,21 +2,6 @@
 
 $id = 100;
 
-// exec("mvn -v 2>&1", $output);
-// echo "<pre>";
-// print_r($output);
-// echo "</pre>";
-
-// exec("gcc --version", $output1);
-// echo "<pre>";
-// print_r($output1);
-// echo "</pre>";
-
-// exec("java --version", $output2);
-// echo "<pre>";
-// print_r($output2);
-// echo "</pre>";
-
 chdir("../c");
 exec("gcc executable/build_lex_index.c ./src/*.c -o build_lex_index.out -lm");
 exec("gcc executable/new_game.c ./src/*.c -o new_game.out -lm");
@@ -26,7 +11,7 @@ exec("./build_lex_index.out dico.bin");
 
 exec("./new_game.out dico.bin $id voiture maison appartement chien loup sculpture plante fleur rose eau feu air terre soleil 2>&1", $output);
 
-exec("./add_word.out dico.bin $id mehdi singe 2>&1");
+// exec("./add_word.out dico.bin $id mehdi singe 2>&1");
 
 // print_r($output);
 
@@ -36,7 +21,7 @@ exec("./add_word.out dico.bin $id mehdi singe 2>&1");
 // var_dump($endWord);
 
 chdir("../java");
-exec("java -cp target/classes fr.uge.Main '$startWord' '$endWord' $id");
+exec("../../libraries/jdk-21.0.2/bin/java -cp target/classes fr.uge.Main '$startWord' '$endWord' $id");
 
 chdir("../c");
 $lines = file('games/' . $id . '-game/msTree.txt');

@@ -19,6 +19,7 @@ class User
     private $avg_score;
     private $min_score;
     private $max_score;
+    private $new_pwd;
 
     // Auxiliary functions
 
@@ -109,11 +110,11 @@ class User
 
     private function sendConfirmationEmail()
     {
-        $mail = new Mail($this->email, "confirm");
+        $mail = new Mail($this->email);
         if ($this->token == null || $this->token == "") {
             self::insertToken();
         }
-        return $mail->send($this);
+        return $mail->send($this, "confirm");
     }
 
     // signup validation with token
@@ -134,22 +135,49 @@ class User
                 $request->bind_param("s", $user_id);
                 $request->execute();
             }
-
-            if ($checkType == "reset") {
+            else if ($checkType == "reset") {
                 $newPwd = hash('sha256', $newPwd);
                 $request = $cnx->prepare("UPDATE sae_user SET password = ? WHERE user_id = ?");
                 $request->bind_param("ss", $newPwd, $user_id);
                 $request->execute();
             }   
+            else if ($checkType == "change_mail") {
+                $request = $cnx->prepare("SELECT new_email FROM sae_user WHERE user_id = ?");
+                $request->bind_param("s", $user_id);
+                $request->execute();
+                $result = $request->get_result();
+                $row = $result->fetch_assoc();
+                $new_email = $row['new_email'];
+                $request = $cnx->prepare("UPDATE sae_user SET email = ?, new_email = NULL, old_email = NULL WHERE user_id = ?");
+                $request->bind_param("ss", $new_email, $user_id);
+                $request->execute();
+            }
+            else if ($checkType == "cancel_mail") {
+                $request = $cnx->prepare("SELECT old_email FROM sae_user WHERE user_id = ?");
+                $request->bind_param("s", $user_id);
+                $request->execute();
+                $result = $request->get_result();
+                $row = $result->fetch_assoc();
+                $old_email = $row['old_email'];
+                $request = $cnx->prepare("UPDATE sae_user SET email = ?, new_email = NULL, old_mail = NULL WHERE user_id = ?");
+                $request->bind_param("ss", $user_id, $old_email);
+                $request->execute();
+            }
+
             
             $request = $cnx->prepare("DELETE FROM sae_token WHERE token = ?");
             $request->bind_param("s", $token);
             $request->execute();
 
-            if ($checkType == "signup") {
-                return "success_signup";
-            } else {
-                return "success_reset";
+            switch($checkType) {
+                case "signup":
+                    return "signup success";
+                case "reset":
+                    return "password changed";
+                case "cancel_mail":
+                    return "mail change canceled";
+                case "change_mail":
+                    return "mail changed";
             }
         }
     }
@@ -212,8 +240,6 @@ class User
 
     public function updateUser($username, $email, $birth_year, $password, $password_repeat)
     {
-        $cnx = self::init_cnx();
-
         $username = htmlspecialchars($username, ENT_QUOTES, 'UTF-8');
         $email = filter_var($email, FILTER_VALIDATE_EMAIL);
 
@@ -226,8 +252,11 @@ class User
             if (hash("sha256", $password) == $this->password) {
                 switch($changes_count) {
                     case 0:
-                        return 1    ;
+                        return 1;
                     default:
+                        include_once "mail.php";
+                        $cnx = self::init_cnx();
+                        $mail = new Mail($this->email);
                         if ($new_username) {
                             if (self::checkUsername($username)) {
                                 return 2;
@@ -236,16 +265,7 @@ class User
                                 $request->bind_param("ss", $username, $this->user_id);
                                 $request->execute();
                                 $this->username = $username;
-                            }
-                        } 
-                        if ($new_email) {
-                            if (self::checkEmail($email)) {
-                                return 2;
-                            } else {
-                                $request = $cnx->prepare("UPDATE sae_user SET email = ?, old_email = ? WHERE user_id = ?");
-                                $request->bind_param("ss", $email, $this->email, $this->user_id);
-                                $request->execute();
-                                $this->email = $email;
+                                $mail->send($this, "new_username");
                             }
                         } 
                         if ($new_birth_year) {
@@ -258,6 +278,19 @@ class User
                                 $this->birth_year = $birth_year;
                             }
                         }
+                        if ($new_email) {
+                            if (self::checkEmail($email)) {
+                                return 2;
+                            } else {
+                                $request = $cnx->prepare("UPDATE sae_user SET new_email = ?, old_email = ? WHERE user_id = ?");
+                                $request->bind_param("sss", $email, $this->email, $this->user_id);
+                                $request->execute();
+                                self::insertToken();
+                                $mail->send($this, "old_mail");
+                                $mail->setTo($email);
+                                $mail->send($this, "new_mail");
+                            }
+                        } 
                 }
                 self::constructUserFromDb($this->user_id);
                 return 1;
@@ -267,6 +300,31 @@ class User
         } else {
             return 4;
         }
+    }
+
+    public function updatePassword($newPwd, $newPwdRepeat, $oldPwd) {
+        if (hash("sha256", $oldPwd) != $this->password) {
+            return 5;
+        }
+        if ($newPwd != $newPwdRepeat) {
+            return 4;
+        }
+        if (hash("sha256", $newPwd) == $this->password) {
+            return 1;
+        }
+        if (strlen($newPwd) < 12 || strlen($newPwd) > 32) {
+            return 3;
+        }
+        if ($newPwd == $oldPwd) {
+            return 1;
+        }
+        $cnx = self::init_cnx();
+        $newPwd = hash("sha256", $newPwd);
+        $request = $cnx->prepare("UPDATE sae_user SET password = ? WHERE user_id = ?");
+        $request->bind_param("ss", $newPwd, $this->user_id);
+        $request->execute();
+        $this->new_pwd = $newPwd;
+        return 0;
     }
 
     private function checkUsername($username) {
@@ -292,12 +350,12 @@ class User
     // Reset password functions
     public function forgotPwd($username, $email) {
         if (!self::checkAccount($username, $email)) {
-            include_once("mail.php");
-            $mail = new Mail($email, "reset");
+            include_once "mail.php";
+            $mail = new Mail($email);
             $user = self::constructUserFromDb(self::getUserId($username));
             self::setFields($user->getUserId(), $user->getUsername(), $user->getPassword(), $user->getEmail(), $user->getBirthYear(), $user->getSignupDate(), $user->getDateLastCnx(), $user->getActive(), $user->getConnected());
             self::insertToken();
-            return $mail->send($this);
+            return $mail->send($this, "reset");
         }
     }
 
@@ -350,7 +408,7 @@ class User
     public function getNumberGamesPlayed($user_id)
     {
         $cnx = self::init_cnx();
-        $request = $cnx->prepare("SELECT COUNT(*) FROM sae_score WHERE user_id = ?;");
+        $request = $cnx->prepare("SELECT COUNT(*) FROM sae_game WHERE user_id = ?;");
         $request->bind_param("s", $user_id);
         $request->execute();
         $result = $request->get_result();
@@ -411,5 +469,15 @@ class User
             $request->bind_param("ss", date("Y-m-d"), $user_id);
             $request->execute();
         }
+    }
+
+    public function setNewPwd($newPwd)
+    {
+        $this->new_pwd = $newPwd;
+    }
+
+    public function getNewPwd()
+    {
+        return $this->new_pwd;
     }
 }
