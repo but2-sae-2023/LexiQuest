@@ -12,7 +12,7 @@ function App() {
         <div>Demo Chatac frontend</div>
       </header>
       <main>
-        <ChatManager socketUrl={substituteHost(process.env.REACT_APP_BACKEND_URL || 'ws://localhost:8090/chat')} />
+        <ChatManager socketUrl={substituteHost(process.env.REACT_APP_BACKEND_URL || 'ws://192.168.239.132:8090/chat')} />
         
       </main>
     </div>

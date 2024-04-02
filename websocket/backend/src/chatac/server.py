@@ -286,8 +286,9 @@ class ChatServer(object):
                     'description': v.description} for (k, v) in self._waiting_rooms.items() }
         
         try:
+            await client.send_message('login_required')
             # send the waiting room list
-            await client.send_message('waiting_room_list', waiting_rooms = get_waiting_rooms_desc())
+            ##await client.send_message('waiting_room_list', waiting_rooms = get_waiting_rooms_desc())
 
             # we manage each message
             async for msg in ws:
@@ -365,7 +366,8 @@ class ChatServer(object):
                                 result = await self.hooks.on_login(user, password)
                                 if result == 'login_ok':
                                     client.identity = {'username': user}
-                                    await client.send_message('login_ok')
+                                    await client.send_message('waiting_room_list', waiting_rooms = get_waiting_rooms_desc())
+                                    await client.send_message('login_ok', username=user)
                                 else:
                                     await client.send_message('login_failed')
 
@@ -384,10 +386,11 @@ class ChatServer(object):
                         elif msg_kind == 'add_word':
                             if client.chat_session:
                                 word = str(decoded_msg.get('word', '')).strip()
-                                if not word:
+                                user= str(decoded_msg.get('user', '')).strip()
+                                if not word or not user:
                                     await client.send_message('word_empty')
                                 else:
-                                    result=await self.hooks.on_add_word(client.chat_session.gameid, word, client.identity['username'])
+                                    result=await self.hooks.add_word(client.chat_session.gameid, word, user)
                                     
 
 

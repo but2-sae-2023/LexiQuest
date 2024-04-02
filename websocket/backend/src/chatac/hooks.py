@@ -157,7 +157,7 @@ class DefaultChatHooks(ChatHooks):
             return await self.on_chat_message(chat_session_id, attendee_id, "ooo") 
         """
 
-    async def add_word(self, chat_session_id: int, chat_game_id: int, word: str, user: str) :
+    async def add_word(self, chat_game_id: int, word: str, user: str) :
         url = 'http://localhost/ancien_controles_cnil/sae/add_word.php'
         query = {'game_id': chat_game_id, 'word': word, 'user': user}
         res = requests.post(url, query, headers={"User-Agent": "Firefox/12.0"})

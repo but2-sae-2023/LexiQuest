@@ -25,18 +25,18 @@ export const Login = (props: {onLogin: (username: string, password: string) => v
 
 }
 
-export const WaitingRoomSelector = (props: {rooms: WaitingRoom[], onChosenRoom: (username: string, waitingRoom: string) => void}) => {
+export const WaitingRoomSelector = (props: {rooms: WaitingRoom[], onChosenRoom: (username: string, waitingRoom: string) => void, user: string}) => {
     const [username, setUsername] = React.useState("")
     const [selectedRoom, setSelectedRoom] = React.useState("")
     return <div className="WaintingRoomSelector">
-        <div>Username: <input type="text" value={username} onChange={event => setUsername(event.target.value)} /></div>
+        <div>Username: {props.user}</div>
         <div>
             {props.rooms.map(room => <div key={room.name}>
                 <input type="radio" name="room" value={room.name} checked={selectedRoom === room.name} onChange={() => setSelectedRoom(room.name)} />
                 {room.name}@{room.attendeeNumber} ({room.description})
             </div>)}
         </div>
-        <button onClick={() => props.onChosenRoom(username, selectedRoom)} disabled={username === "" || selectedRoom === "" || props.rooms.findIndex(x => x.name === selectedRoom) === -1}>Join the waiting room</button>
+        <button onClick={() => props.onChosenRoom(props.user, selectedRoom)} disabled={ selectedRoom === "" || props.rooms.findIndex(x => x.name === selectedRoom) === -1}>Join the waiting room</button>
     </div>
 }
 
@@ -97,6 +97,16 @@ export const Word = (props: {messages: Message[], active: boolean, onMessageWrit
     </div>
 }
 
+export const Game = (props: {onAddword: (word: string) => void}) => {
+    const [content, setContent] = React.useState("")
+    return <div className="Game">
+        <p>Game</p>
+        <input type="text" value={content} style={{flex: 1}} onChange={event => setContent(event.target.value)} />
+        <button onClick={() => {props.onAddword(content); setContent('')}}>Send</button>
+    </div>
+
+}
+
 interface LoginState { login: true }
 interface DisconnectedState { disconnected: true }
 interface ConnectingState { connecting: true }
@@ -112,6 +122,7 @@ export const ChatManager = (props: {socketUrl: string}) => {
     const [error, setError] = React.useState<string>('')
     const [waitingRooms, setWaitingRooms] = React.useState<WaitingRoom[]>([])
     const [gameid, setGameid] = React.useState<string>('')
+    const [username, setUsername] = React.useState<string>('')
 
     const onNewSocketMessage = (kind: string, content: Record<string, any>) => {
         console.debug("Received message from websocket", content)
@@ -134,6 +145,14 @@ export const ChatManager = (props: {socketUrl: string}) => {
         }
 
         switch(kind) {
+            case 'login_required':
+                setChatState({login: true})
+                break
+            
+            case 'login_ok':
+                setUsername(content.username)
+                break
+
             case 'waiting_room_list':
                 setWaitingRooms(readWaitingRooms(content))
                 setChatState({roomSelection: true})
@@ -213,6 +232,9 @@ export const ChatManager = (props: {socketUrl: string}) => {
     const login= React.useCallback((username: string, password: string) => {
         sendToSocket('login', {user: username, password: password})
     }, [sendToSocket])
+    const addWord = React.useCallback((word: string, username: string) => {
+        sendToSocket('add_word', {word: word, user: username})    
+    }, [sendToSocket])
 
     useEffect(() => {
         if ('connecting' in chatState) {
@@ -278,14 +300,16 @@ export const ChatManager = (props: {socketUrl: string}) => {
             <div className="Connecting">
                 <div>Connecting to server {props.socketUrl}</div>
             </div>}
-        {'roomSelection' in chatState &&
+        {'login' in chatState &&
             <Login onLogin={login}/>}
         {'roomSelection' in chatState && 
-            <WaitingRoomSelector rooms={waitingRooms} onChosenRoom={connectToWaitingRoom} />}
+            <WaitingRoomSelector rooms={waitingRooms} onChosenRoom={connectToWaitingRoom} user={username} />}
         {'waitingRoomName' in chatState &&
             <RoomWaiter roomName={chatState.waitingRoomName} startTimestamp={chatState.startTimestamp} onLeaving={leaveWaitingRoom} />}
         {'messages' in chatState && 
             <ChatSession messages={chatState.messages} active={chatState.active} onMessageWritten={sendChatMessage} onNewgame={new_game} onLeaving={leaveChatSession} onClosing={closeChatSession} />
         }
+        {'messages' in chatState &&
+            <Game onAddword={word => addWord(word, username)}/>}
     </div>
 }
