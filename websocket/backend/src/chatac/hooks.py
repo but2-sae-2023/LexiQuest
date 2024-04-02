@@ -3,6 +3,7 @@
 from typing import Dict, List, Any, Union
 import urllib
 import requests
+import json
 
 class ChatHooks(object):
     """
@@ -74,9 +75,10 @@ class ChatHooks(object):
 class DefaultChatHooks(ChatHooks):
     DEFAULT_WELCOME_MESSAGE = "Welcome everybody!"
     DEFAULT_DURATION = 60
-    DEFAULT_ROOMS ={"0": {"attendee_number": 2, "duration": 600, "welcome_message": "Welcome everybody!"},
-                    "1": {"attendee_number": 1, "duration": 600, "welcome_message": "Welcome to the test room!"},
-                    "2": {"attendee_number": 3, "duration": 60, "welcome_message": "Welcome to the test room!"},
+    DEFAULT_ROOMS ={"Serveur #1": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
+                    "Serveur #2": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
+                    "Serveur #3": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
+                    "Serveur #4": {"attendee_number": 1, "duration": 600, "welcome_message": "Bienvenue!"},
     } 
     DEF_ID=0
 
@@ -86,6 +88,7 @@ class DefaultChatHooks(ChatHooks):
             self.has_left = False
             self.message_number = 0
             self.char_number = 0
+            self.username=''
 
     def __init__(self):
         self._rooms: Dict[str, Dict[str, Any]] = {}
@@ -137,33 +140,47 @@ class DefaultChatHooks(ChatHooks):
         return f"Did you know that: {joined}"
 
     async def on_login(self, user: str, password: str):
-        url = 'http://localhost/ancien_controles_cnil/sae/login.php'
-        query = {'user': user, 'password': password}
+        url = 'https://perso-etudiant.u-pem.fr/~rabah.cherak/LexiQuest-bis/multi/login.php'
+        query = {'user': user, 'pwd': password}
         res = requests.post(url, query, headers={"User-Agent": "Firefox/12.0"})
         if res.status_code == 200:
             return res.text.strip()
-        return 0
+        return res.status_code
+    
+    def get_usernames(self, chat_session_id: int) -> List[str]:
+        usernames = [attendee.username for attendee in self._attendees[chat_session_id].values() if not attendee.has_left]
+        return usernames
 
-    async def new_game(self) -> None:
-        url = 'http://localhost/ancien_controles_cnil/sae/test.php'
-        query = {'site': 'test'}
+    async def new_game(self, username: str) -> None:
+        url = 'https://perso-etudiant.u-pem.fr/~rabah.cherak/LexiQuest-bis/multi/new_game.php'
+        query = {'user': username}
         res = requests.post(url, query, headers={"User-Agent": "Firefox/12.0"})
         if res.status_code == 200:
-            random_number = res.text.strip()
-            return random_number
+            if res.text:
+                response_json = res.json()  # Parse the response as JSON
+                if 'state' in response_json:  # Check if the 'result' key exists
+                    if 'id' in response_json:
+                        if 'nodes' in response_json:
+                            return response_json['state'],response_json['id'], response_json['nodes']
+        return res.status_code
         # Iterate over all attendees in the chat session
         """
         for attendee_id in self._attendees[chat_session_id]:
             return await self.on_chat_message(chat_session_id, attendee_id, "ooo") 
         """
 
-    async def add_word(self, chat_game_id: int, word: str, user: str) :
-        url = 'http://localhost/ancien_controles_cnil/sae/add_word.php'
-        query = {'game_id': chat_game_id, 'word': word, 'user': user}
+    async def add_word(self, chat_game_id: int, word: str, user: str, nodes: json) :
+        url = 'https://perso-etudiant.u-pem.fr/~rabah.cherak/LexiQuest-bis/multi/add_word.php'
+        query = {'gameId': chat_game_id, 'userword': word, 'username': user, 'nodes': json.dumps(nodes)}
         res = requests.post(url, query, headers={"User-Agent": "Firefox/12.0"})
         if res.status_code == 200:
-            return res.text.strip()
-        return 0
+            if res.text:
+                response_json = res.json()  # Parse the response as JSON
+                if 'state' in response_json:
+                    if 'nodes' in response_json:
+                        return response_json['state'], response_json['nodes']
+        return res.status_code
+
         
 
     async def check_id(self, chat_session_id:int):  

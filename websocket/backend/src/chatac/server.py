@@ -133,6 +133,7 @@ class ChatSession(object):
         self._chat_message_queue = asyncio.Queue()  # queue for chat messages to be sent
         self._leave_queue = asyncio.Queue()  # queue for attendees that want to leave
         self._game_state = None
+        self._game_nodes={}
 
     def not_empty_message_queue(self):
         return not self._chat_message_queue.empty()
@@ -227,16 +228,29 @@ class ChatServer(object):
             client.waiting_room = None
             client.chat_session = chat_session
         try:
+            """
             if chat_session.gameid is None:
-                gameid = await self.hooks.new_game()
-                chat_session.gameid = gameid
+                ##result = await self.hooks.new_game()
+                chat_session.gameid = '70'
+            """
             
             """
             to_send = await self.hooks.on_chat_message(client.chat_session.id, client.id, gameid)
             for (addressee_id, body) in to_send.items():
                 await client.chat_session.put_in_message_queue([addressee_id], 'chat_message_received', sender=client.identity.get('name'), content=body)
             """
-            await chat_session.send_message(None, 'chat_session_started', welcome_message=chat_session.welcome_message, gameid=chat_session.gameid)
+            if client.chat_session is not None and client.chat_session.gameid is None:
+                result = await self.hooks.new_game(client.username)                
+                if result[0]==200:
+                    client.chat_session.gameid = result[1]
+                    client.chat_session._game_nodes=result[2]
+                    await client.chat_session.send_message(None,'new_game', result= result, nodes=client.chat_session._game_nodes)
+                else:
+                    await client.chat_session.send_message(None,'error_new_game', result= result)
+            usernames = []
+            for client in chat_session.clients.values():
+                usernames.append(client.username)
+            await chat_session.send_message(None, 'chat_session_started', welcome_message=chat_session.welcome_message, gameid=chat_session.gameid, players=usernames)
             
             remaining_time = chat_session.deadline - time.monotonic()
             while remaining_time > 0 and (chat_session.clients or chat_session.not_empty_message_queue()):
@@ -365,16 +379,18 @@ class ChatServer(object):
                             else:
                                 result = await self.hooks.on_login(user, password)
                                 if result == 'login_ok':
-                                    client.identity = {'username': user}
+                                    client.username = user
                                     await client.send_message('waiting_room_list', waiting_rooms = get_waiting_rooms_desc())
                                     await client.send_message('login_ok', username=user)
+                                elif result==0:
+                                    await client.send_message('connection erro', result=result)
                                 else:
-                                    await client.send_message('login_failed')
+                                    await client.send_message('login_failed', result=result)
 
                         elif msg_kind == 'new_game':
                             if client.chat_session:
                                 if client.chat_session.gameid is None:
-                                    gameid = await self.hooks.new_game()
+                                    gameid = await self.hooks.new_game(client.username)
                                     self._chat_sessions[client.chat_session.id].gameid = gameid
                                     self._chat_sessions[client.chat_session.id]._game_state = 'en_cours'
                                     to_send = await self.hooks.on_chat_message(client.chat_session.id, client.id, gameid)
@@ -390,10 +406,13 @@ class ChatServer(object):
                                 if not word or not user:
                                     await client.send_message('word_empty')
                                 else:
-                                    result=await self.hooks.add_word(client.chat_session.gameid, word, user)
+                                    result=await self.hooks.add_word(client.chat_session.gameid, word, user, client.chat_session._game_nodes)
+                                    if result[0]==200:
+                                        client.chat_session._game_nodes=result[1]
+                                        await client.send_message('word_added', result=result, nodes=result[1])
+                                    else:
+                                        await client.send_message('error_add_word', result=result)
                                     
-
-
 
                         elif msg_kind == 'leave_chat_session':
                             if client.chat_session:

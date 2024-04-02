@@ -33,7 +33,7 @@ export const WaitingRoomSelector = (props: {rooms: WaitingRoom[], onChosenRoom: 
         <div>
             {props.rooms.map(room => <div key={room.name}>
                 <input type="radio" name="room" value={room.name} checked={selectedRoom === room.name} onChange={() => setSelectedRoom(room.name)} />
-                {room.name}@{room.attendeeNumber} ({room.description})
+                {room.name}  ({room.attendeeNumber} joueurs )
             </div>)}
         </div>
         <button onClick={() => props.onChosenRoom(props.user, selectedRoom)} disabled={ selectedRoom === "" || props.rooms.findIndex(x => x.name === selectedRoom) === -1}>Join the waiting room</button>
@@ -97,10 +97,14 @@ export const Word = (props: {messages: Message[], active: boolean, onMessageWrit
     </div>
 }
 
-export const Game = (props: {onAddword: (word: string) => void}) => {
+export const Game = (props: {onAddword: (word: string) => void,  players: string[]}) => {
     const [content, setContent] = React.useState("")
     return <div className="Game">
-        <p>Game</p>
+        <p>Partie</p>
+        <p>Joueurs:</p>
+        <ul>
+            {props.players.map((player, i) => <li key={i}>Joueur {i+1}: {player}</li>)}
+        </ul>
         <input type="text" value={content} style={{flex: 1}} onChange={event => setContent(event.target.value)} />
         <button onClick={() => {props.onAddword(content); setContent('')}}>Send</button>
     </div>
@@ -123,6 +127,7 @@ export const ChatManager = (props: {socketUrl: string}) => {
     const [waitingRooms, setWaitingRooms] = React.useState<WaitingRoom[]>([])
     const [gameid, setGameid] = React.useState<string>('')
     const [username, setUsername] = React.useState<string>('')
+    const [roomPlayers, setRoomPlayers] = React.useState<string[]>([])
 
     const onNewSocketMessage = (kind: string, content: Record<string, any>) => {
         console.debug("Received message from websocket", content)
@@ -175,6 +180,7 @@ export const ChatManager = (props: {socketUrl: string}) => {
                 setChatState({startTimestamp: performance.now(), messages: [], active: true})
                 addChatMessage('admin', content.welcome_message)
                 addChatMessage('id', content.gameid)
+                setRoomPlayers(content.players)
                 break
 
             case 'chat_message_received':
@@ -310,6 +316,6 @@ export const ChatManager = (props: {socketUrl: string}) => {
             <ChatSession messages={chatState.messages} active={chatState.active} onMessageWritten={sendChatMessage} onNewgame={new_game} onLeaving={leaveChatSession} onClosing={closeChatSession} />
         }
         {'messages' in chatState &&
-            <Game onAddword={word => addWord(word, username)}/>}
+            <Game onAddword={word => addWord(word, username)} players={roomPlayers} />}
     </div>
 }
