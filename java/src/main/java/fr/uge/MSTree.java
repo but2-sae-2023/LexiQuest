@@ -19,7 +19,7 @@ import java.util.Stack;
  */
 public class MSTree {
     private final Map<Bridge, Integer> msMap;
-    private final TreeMap<Bridge, Integer> sortedMSMap;
+    private TreeMap<Bridge, Integer> sortedMSMap;
     private String initialWord;
     private String finalWord;
 
@@ -77,6 +77,53 @@ public class MSTree {
     }
 
     /**
+     * Méthode récursive utilisée dans getCycle qui permet de trouver un cycle dans lequel se trouve le mot initial
+     *
+     * @param initialWord   le mot initial
+     * @param currentWord   le mot courant
+     * @param visitedWords  les mots déjà visités
+     * @param bridgesInCycle les ponts dans le cycle
+     * @return true si un cycle a été trouvé, false sinon
+     */
+
+    private boolean findCycle(String initialWord, String currentWord, Set<String> visitedWords, List<Bridge> bridgesInCycle) {
+        List<Bridge> bridgesLinkedTo = getBridgesLinkedTo(currentWord);
+        for (Bridge bridge : bridgesLinkedTo) {
+            String otherWord = bridge.getOtherWord(currentWord);
+            if (otherWord.equals(initialWord) && bridgesInCycle.size() > 1) {
+                bridgesInCycle.add(bridge);
+                return true;
+            }
+
+            if (!visitedWords.contains(otherWord)) {
+                visitedWords.add(otherWord);
+                if (!bridgesInCycle.contains(bridge)) {
+                    bridgesInCycle.add(bridge);
+                }
+
+                boolean cycleFound = findCycle(initialWord, otherWord, visitedWords, bridgesInCycle);
+                if (cycleFound) {
+                    return true;
+                }
+                bridgesInCycle.remove(bridge);
+            }
+        }
+        return false;
+    }
+
+    // Méthode pour obtenir le pont entre deux mots
+    private Bridge getBridgeBetween(String word1, String word2) {
+        for (Bridge bridge : graph) {
+            if (bridge.containsWords(word1, word2)) {
+                return bridge;
+            }
+        }
+        return null;
+    }
+
+    
+    
+    /**
      * Méthode complémentaire à getBestPath qui permet de trouver le meilleur chemin entre deux mots
      *
      * @param startWord le mot de départ
@@ -130,40 +177,7 @@ public class MSTree {
         }
     }
 
-    /**
-     * Méthode récursive utilisée dans getCycle qui permet de trouver un cycle dans lequel se trouve le mot initial
-     *
-     * @param initialWord   le mot initial
-     * @param currentWord   le mot courant
-     * @param visitedWords  les mots déjà visités
-     * @param bridgesInCycle les ponts dans le cycle
-     * @return true si un cycle a été trouvé, false sinon
-     */
-
-    private boolean findCycle(String initialWord, String currentWord, Set<String> visitedWords, List<Bridge> bridgesInCycle) {
-        List<Bridge> bridgesLinkedTo = getBridgesLinkedTo(currentWord);
-        for (Bridge bridge : bridgesLinkedTo) {
-            String otherWord = bridge.getOtherWord(currentWord);
-            if (otherWord.equals(initialWord) && bridgesInCycle.size() > 1) {
-                bridgesInCycle.add(bridge);
-                return true;
-            }
-
-            if (!visitedWords.contains(otherWord)) {
-                visitedWords.add(otherWord);
-                if (!bridgesInCycle.contains(bridge)) {
-                    bridgesInCycle.add(bridge);
-                }
-
-                boolean cycleFound = findCycle(initialWord, otherWord, visitedWords, bridgesInCycle);
-                if (cycleFound) {
-                    return true;
-                }
-                bridgesInCycle.remove(bridge);
-            }
-        }
-        return false;
-    }
+    
 
     /**
      * Retourne les ponts liés à un mot
@@ -283,7 +297,7 @@ public class MSTree {
      */
     public String writableTree() {
         StringBuilder sb = new StringBuilder();
-        System.out.println("initialWord : " + initialWord + " | finalWord : " + finalWord);
+        // System.out.println("initialWord1 : " + initialWord + " | finalWord : " + finalWord);
         for (Entry<Bridge, Integer> entry : sortedMSMap.entrySet()) {
             sb.append(entry.getKey().firstWord()).append(",").append(entry.getKey().secondWord()).append(",").append(entry.getValue()).append("\n");
         }
@@ -298,6 +312,7 @@ public class MSTree {
     public String writableBestPath() {
         StringBuilder sb = new StringBuilder();
         List<Bridge> bestPath = getBestPath();
+        System.out.println(bestPath.toString() + "-----------------");
         for (Bridge bridge : bestPath) {
             sb.append(bridge.firstWord()).append(",").append(bridge.secondWord()).append(",").append(msMap.get(bridge)).append("\n");
         }

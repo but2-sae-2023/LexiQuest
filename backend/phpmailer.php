@@ -33,10 +33,5 @@ $mail->IsHTML(true);
 $mail->MsgHTML($body);            //Forcer le contenu du body html pour ne pas avoir l'erreur "body is empty' même si on utilise l'email en contenu alternatif
 
 // Envoi du mail
-if (!$mail->send()) {
-    echo $mail->ErrorInfo;
-    return false;
-}
-return true;
-
+return $mail;
 ?>

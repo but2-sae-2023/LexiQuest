@@ -1,0 +1,5 @@
+singe,mouton,13
+chien,mouton,21
+singe,renard,24
+chien,serpent,29
+chien,chat,40

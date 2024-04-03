@@ -1,0 +1,167 @@
+.ChatManager {
+    display: flex;
+    /* flex-direction: column; */
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    /* border: 2px solid red; */
+    overflow: hidden;
+    /* border: 1px solid white; */
+    justify-content: space-evenly;
+}
+
+.ChatManager * {
+    margin: 8px;
+}
+
+.Error {
+    background-color: red;
+}
+
+.Disconnected {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Connecting {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.WaitingRoomSelector {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.WaitingRoomSelector #username{
+    text-align: left;
+    padding: 1vh 1vw;
+    font-size: 2rem;
+    width: 100%;
+}
+
+.WaitingRoomSelector #rooms{
+    display: flex;
+    height: 50vh;
+    width: 100%;
+    flex-direction: column;
+    gap: 1vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.WaitingRoomSelector #rooms div{
+    display: flex;
+    width: 20vw;
+    flex-direction: row;
+}
+
+.WaitingRoomSelector #rooms div input{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10%;
+    clip-path: circle(25%);
+}
+
+.WaitingRoomSelector #rooms div input:checked{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10%;
+    background-color: aqua;
+    clip-path: circle(35%);
+}
+
+.WaitingRoomSelector #rooms div h2{
+    width: 80%;
+}
+
+.WaitingRoomSelector button{
+    margin-bottom: 10vh;
+}
+
+.RoomWaiter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.ChatSession {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.ChatMessagesDisplayer {
+    flex: 1;
+}
+
+.ChatMessageDisplayer {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.MessageSender {
+    display: flex;
+    flex-direction: row;
+}
+
+.WaintingRoomSelector{
+    position: relative;
+    /* border: 2px solid white; */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    height: 75%;
+    width: 75%;
+}
+
+.WaitingRoomUsername {
+    font-size: 48px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 48px;
+    font-family: var(--title-font);
+}
+
+input[type='radio'] {
+    border: 2px solid white;
+    margin: 16px;
+    padding: 5px 5px;
+    height: 16px;
+    width: 16px; 
+    appearance: none;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+input[type='radio']:checked {
+    background-color: white;
+}
+
+
+
+.RoomRadio {
+    /* border: 2px solid white; */
+    display: flex;
+    align-items: center;
+    /* padding: 8px; */
+    /* padding-left: 8px; */
+    gap: 16px;
+    font-size: 24px;
+    margin: 8px;
+    font-family: var(--title-font);
+}

@@ -1,10 +1,6 @@
 Highcharts.chart('graph-container', {
     title: {
-        text: "Partie monojoueur",
-        style: {
-            color: 'white',
-            fontSize: '30px'
-        }
+        text: null
     },
 
     credits: {
@@ -53,13 +49,7 @@ Highcharts.chart('graph-container', {
         marker: {
             radius: 20
         },
-        // data: [{
-        //     from: startWord,
-        //     to: endWord
-        // }, {
-        //     from: endWord,
-        //     to: startWord
-        // }]
-        data : data
+        data : data,
+        nodes : nodes
     }]
 });

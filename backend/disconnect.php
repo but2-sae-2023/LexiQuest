@@ -7,9 +7,10 @@
         $user = $_SESSION['user'];
         $user = $user->disconnect($user->getUsername());
         $_SESSION['user'] = $user;
+        session_destroy();
         header('location: ../index.php');
     } else {
+        session_destroy();
         header('location: ../index.php');
-    }
-    
+    }  
 ?>

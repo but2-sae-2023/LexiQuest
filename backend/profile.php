@@ -1,11 +1,17 @@
 <?php
-include_once("../class/user.php");
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include_once ("../class/user.php");
 session_start();
 if (isset($_SESSION['backend'])) {
     unset($_SESSION['backend']);
 }
 if (isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
+    $user_id = $user->getUserId();
     if (!$user->checkIfConnected()) {
         header('location: ../index.php');
     }
@@ -15,40 +21,56 @@ if (isset($_SESSION['user'])) {
 
 ?>
 <!DOCTYPE html>
+<html lang="fr">
 <html>
 
 <head>
-    <title>Profile</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../style/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/style.scss" />
+    <link rel="stylesheet" href="../style/profile.scss" />
+    <title>Profil</title>
 </head>
 
 <body>
-    <div class="container center profil-space display-row">
-        <div class="edit-profile">
-            <div class="edit-container">
-                <h1>Informations</h1>
-                <a href="./edit-profile.php"><div class="edit-button"></div></a>
+    <div class="logo center">
+        <img src="../data/img/logo.png" alt="logo" />
+    </div>
+    <div class="container">
+        <div class="username"><?php echo $user->getUsername() ?></div>
+        <div class="profile">
+            <div class="content">
+                <div class="title">
+                    <h1>Informations
+                        <a href="../backend/edit-profile.php">
+                            <div class="edit"></div>
+                        </a>
+                    </h1>
+                    <hr>
+                </div>
+                <div class="item">Adresse email<span><?php echo $user->getEmail()?></span></div>
+                <div class="item">Année de naissance<span><?php echo $user->getBirthYear()?></span></div>
+                <?php 
+                    $signupDate = $user->getSignupDate();
+                    $signupDate = date("d-m-Y", strtotime($signupDate));
+                ?>
+                <div class="item">Date d'inscription<span><?php echo $signupDate ?></span></div>
             </div>
-
-            <hr>
-            <h2>Nom d'utilisateur : <u> <?php echo $user->getUsername()?> </u></h2>
-            <h2>Adresse Email : <u> <?php echo $user->getEmail()?> </u> </h2>
-            <h2>Année de naissance : <u> <?php echo $user->getBirthYear()?> </u></h2>
-            <?php 
-                $orgDate = $user->getSignupDate();
-                $newDate = date("d-m-Y", strtotime($orgDate));
-            ?>
-            <h2>Date d'inscription : <u> <?php echo $newDate ?> </u></h2>
+        </div>
+        <div class="profile">
+            <div class="content">
+                <div class="title">
+                    <h1>Statistiques</h1>
+                    <hr>
+                </div>
+                <div class="item">Nombre de parties jouées<span><?php echo $user->getNumberGamesPlayed($user_id) ?></span></div>
+            </div>
         </div>
     </div>
-    <br>
-    <p><a href="trace.php"><button>Page de trace</button></a></p> <br>
-    
-    <div class="options">
-        <a href="home.php">Retour</a>
-    </div>
 
+    <a href="../frontend/home.php">
+        <div class="back"></div>
+    </a>
 </body>
 
 </html>
