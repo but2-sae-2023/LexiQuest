@@ -1,12 +1,12 @@
 # LexiQuest
 
 ## ✏️ Auteurs :
-Rabah Mehdi CHERAK
-Loïc MAURITIUS
-Enzo LETOCART 
-Thivakar JEYASEELAN 
-Laxhan PUSHPAKUMAR 
-Amaury BOOMS
+- Rabah Mehdi CHERAK
+- Loïc MAURITIUS
+- Enzo LETOCART 
+- Thivakar JEYASEELAN 
+- Laxhan PUSHPAKUMAR 
+- Amaury BOOMS
 
 ## 📖 Explication :
 
