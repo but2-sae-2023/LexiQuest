@@ -1,6 +1,6 @@
 # LexiQuest
 
-## Auteurs :pencil2: :
+## :pencil2: Auteurs :
 Rabah Mehdi CHERAK
 Loïc MAURITIUS
 Enzo LETOCART 
