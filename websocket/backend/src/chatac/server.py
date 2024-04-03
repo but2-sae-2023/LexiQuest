@@ -175,6 +175,10 @@ class ChatSession(object):
         # warn the attendee itself that its query has been acknowledged
         await self.put_in_message_queue([attendee.id], 'chat_session_left')
 
+    async def new_word(self, result):
+        clients= list(self.clients)
+        await self.put_in_message_queue(clients, 'word_added', result= result)
+
     async def terminate(self, exit_message=''):
         """
         Terminate the chat session for everybody
@@ -244,7 +248,7 @@ class ChatServer(object):
                 if result[0]==200:
                     client.chat_session.gameid = result[1]
                     client.chat_session._game_nodes=result[2]
-                    await client.chat_session.send_message(None,'new_game', result= result, nodes=client.chat_session._game_nodes)
+                    await client.chat_session.send_message(None,'new_game_started', result= json.dumps(result[3], ensure_ascii=False))
                 else:
                     await client.chat_session.send_message(None,'error_new_game', result= result)
             usernames = []
@@ -409,7 +413,9 @@ class ChatServer(object):
                                     result=await self.hooks.add_word(client.chat_session.gameid, word, user, client.chat_session._game_nodes)
                                     if result[0]==200:
                                         client.chat_session._game_nodes=result[1]
-                                        await client.send_message('word_added', result=result, nodes=result[1])
+                                        ##await client.send_message('word_added', result= json.dumps(result[2], ensure_ascii=False))
+                                        clients = list(client.chat_session.clients)
+                                        await client.chat_session.put_in_message_queue(clients, 'word_added', result= json.dumps(result[2], ensure_ascii=False))
                                     else:
                                         await client.send_message('error_add_word', result=result)
                                     

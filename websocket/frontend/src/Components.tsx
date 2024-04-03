@@ -97,7 +97,7 @@ export const Word = (props: {messages: Message[], active: boolean, onMessageWrit
     </div>
 }
 
-export const Game = (props: {onAddword: (word: string) => void,  players: string[]}) => {
+export const Game = (props: {onAddword: (word: string) => void,  players: string[], chart: string}) => {
     const [content, setContent] = React.useState("")
     return <div className="Game">
         <p>Partie</p>
@@ -107,6 +107,7 @@ export const Game = (props: {onAddword: (word: string) => void,  players: string
         </ul>
         <input type="text" value={content} style={{flex: 1}} onChange={event => setContent(event.target.value)} />
         <button onClick={() => {props.onAddword(content); setContent('')}}>Send</button>
+        <p>{props.chart}</p>
     </div>
 
 }
@@ -128,6 +129,7 @@ export const ChatManager = (props: {socketUrl: string}) => {
     const [gameid, setGameid] = React.useState<string>('')
     const [username, setUsername] = React.useState<string>('')
     const [roomPlayers, setRoomPlayers] = React.useState<string[]>([])
+    const [chart, setChart]= React.useState<string>('')
 
     const onNewSocketMessage = (kind: string, content: Record<string, any>) => {
         console.debug("Received message from websocket", content)
@@ -181,6 +183,14 @@ export const ChatManager = (props: {socketUrl: string}) => {
                 addChatMessage('admin', content.welcome_message)
                 addChatMessage('id', content.gameid)
                 setRoomPlayers(content.players)
+                break
+
+            case 'new_game_started':
+                setChart(content.result)
+                break
+
+            case 'word_added':
+                setChart(content.result)
                 break
 
             case 'chat_message_received':
@@ -316,6 +326,6 @@ export const ChatManager = (props: {socketUrl: string}) => {
             <ChatSession messages={chatState.messages} active={chatState.active} onMessageWritten={sendChatMessage} onNewgame={new_game} onLeaving={leaveChatSession} onClosing={closeChatSession} />
         }
         {'messages' in chatState &&
-            <Game onAddword={word => addWord(word, username)} players={roomPlayers} />}
+            <Game onAddword={word => addWord(word, username)} players={roomPlayers} chart={chart}/>}
     </div>
 }
