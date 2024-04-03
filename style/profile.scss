@@ -8,8 +8,11 @@
     font-family: var(--title-font);
 }
 
-.profile {
+.container {
+    gap: 128px;
+}
 
+.profile {
     .content {
         display: flex;
         flex-direction: column;
@@ -52,8 +55,4 @@
             }
         }
     }
-}
-
-.container {
-    gap: 128px;
 }

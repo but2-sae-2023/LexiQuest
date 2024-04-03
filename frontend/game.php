@@ -66,6 +66,7 @@ if (isset($_SESSION['user'])) {
             async function fetchData() {
                 const response = await fetch('../backend/game.php');
                 const data = await response.json();
+                console.log(data);
                 window.data = data.content;
                 window.nodes = data.nodes;
                 window.words = data.words;

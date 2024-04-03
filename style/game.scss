@@ -2,7 +2,6 @@
     position: absolute;
     margin: 64px;
     top: 0;
-
     width: 25%;
 
     form {
@@ -21,7 +20,8 @@
             transition: 0.3s;
             position: absolute;
             right: 6px;
-            aspect-ratio: 1;
+            height: 80%;
+            // aspect-ratio: 1;
             background: rgba(255, 255, 255, 1) url(../data/img/arrow.png) center/32px no-repeat;
 
             transition: 0.3s;
@@ -54,7 +54,7 @@
     align-items: center;
     border: 1px solid rgba(255, 255, 255, 0.226);
     height: 264px;
-    overflow: scroll;
+    overflow-y: auto;
     width: 256px;
     position: absolute;
     top: 0;

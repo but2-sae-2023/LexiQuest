@@ -7,6 +7,7 @@ if (isset($_SESSION['user'])) {
         header('location: ./frontend/home.php');
     }
 }
+
 if (isset($_POST['user']) && isset($_POST['pwd'])) {
     $user = new User();
     $user = $user->connect($_POST['user'], $_POST['pwd']);

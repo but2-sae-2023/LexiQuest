@@ -28,7 +28,7 @@ if (!$_SESSION['gameRunning']) {
 	$_SESSION['gameId'] = $id;
 
 	chdir("../c");
-	exec("./new_game.out dico.bin $id fleurs leur 2>&1", $output);
+	exec("./new_game.out dico.bin $id chat chien animaux voiture bus 2>&1", $output);
 
 	[$startWord, $endWord] = explode(",", file("games/$id-game/gameFile.txt")[1]);
 
@@ -54,7 +54,6 @@ if (isset($_POST['userWord'])) {
 
 chdir("../c");
 $lines = file('games/' . $id . '-game/msTree.txt');
-
 $words = explode(",", file('games/'.$id.'-game/gameFile.txt')[1]);
 
 $content = [];
@@ -69,4 +68,3 @@ foreach ($lines as $line) {
 }
 
 echo json_encode(['content' => $content, 'nodes' => $nodes, 'words' => $words]);
-// echo json_encode(array('content' => 'test'));
