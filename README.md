@@ -38,4 +38,4 @@ Pour lancer le WebSocket, vous pouvez regarder sur le dépôt git suivant : [Cha
 - Parfois, le graphe se sépare en 2 à cause de mots à similarité trop faible
 
 ## ➕ Info supplémentaires :
-Nous avons fusionné avec un autre groupe de SAE, ce faisant nous avons pu mettre en commun le module en C et nous nous somme principalement inspiré du code du groupe fusionné.
+Nous avons fusionné avec un autre groupe de SAE, ce faisant nous avons pu mettre en commun le module en C et nous nous sommes principalement inspirés du code du groupe fusionné.
