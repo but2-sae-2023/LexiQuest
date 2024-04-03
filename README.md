@@ -2,7 +2,7 @@
 
 Auteurs : 
 
-RABAH Cheral Mehdi
+CHERAK Rabah Mehdi
 MAURITIUS Loic
 LETOCART Enzo
 JEYASEELAN Thivakar
@@ -11,7 +11,7 @@ BOOMS Amaury
 
 Explication : 
 
-Le projet Semantic Analogy Explorer s'inscrit dans une démarche pédagoque SAE du BUT Informatique, il met en valeur nos compétence de développement applicatif et web. L'object étant de créer un jeu en ligne sur un site web se basant sur de la sémentique. Le principe du jeu est de relier un mot de départ et de fin à d'autres mots proposé par les jouerus et le but étant de réaliser le plus grand score se basant sur la ressemblance sémentique et/ou orthographique de 2 mots, le tout formant une chaîne de mot qui représentera le score de partie du joueur. Les joueurs proposent des mots proches en fonction de deux critères principaux : la similarité sémantique et la similarité orthographique. La similarité sémantique est la plus importante, où des mots comme 'hautbois' et 'clarinette' sont considérés comme similaires car ils sont généralement utilisés dans le même contexte. La similarité orthographique, quant à elle, se réfère à la proximité des orthographes, comme 'bateau' et 'château'. Le score de la chaîne de mots est déterminé par le score de similarité de son maillon le plus faible, ce qui signifie que l'objectif est de s'assurer que chaque mot ressemble autant que possible au précédent. En plus du jeu lui-même, l'application offre un système de compte pour que les joueurs puissent s'identifier, retrouver leurs parties passées ou en cours, et organiser des parties avec leurs contacts ou dans des salons publiques.
+Le projet Semantic Analogy Explorer s'inscrit dans une démarche pédagoque SAE du BUT Informatique, il met en valeur nos compétence de développement applicatif et web. L'object étant de créer un jeu en ligne sur un site web se basant sur de la sémantique. Le principe du jeu est de relier un mot de départ et de fin à d'autres mots proposé par les jouerus et le but étant de réaliser le plus grand score se basant sur la ressemblance sémentique et/ou orthographique de 2 mots, le tout formant une chaîne de mot qui représentera le score de partie du joueur. Les joueurs proposent des mots proches en fonction de deux critères principaux : la similarité sémantique et la similarité orthographique. La similarité sémantique est la plus importante, où des mots comme 'hautbois' et 'clarinette' sont considérés comme similaires car ils sont généralement utilisés dans le même contexte. La similarité orthographique, quant à elle, se réfère à la proximité des orthographes, comme 'bateau' et 'château'. Le score de la chaîne de mots est déterminé par le score de similarité de son maillon le plus faible, ce qui signifie que l'objectif est de s'assurer que chaque mot ressemble autant que possible au précédent. En plus du jeu lui-même, l'application offre un système de compte pour que les joueurs puissent s'identifier, retrouver leurs parties passées ou en cours, et organiser des parties avec leurs contacts ou dans des salons publiques.
 
 Règles du jeu : 
 
@@ -25,7 +25,23 @@ Information de déploiement :
 
 bugs et fonctionnalités non présentes : 
 
-Du fait d'un certain retard de plusieurs modules, le mode multijoueur n'est pas encore implémenté, tout comme les règles de jeu. L'application mobile il manque le système de messagerie. [A finir]
+-Le calcul des scores + l'insertion des mots prend de plus en plus de temps au fur et à mesure qu'on en ajoute
+
+-Au bout d'environ 8 mots insérés dans la chaîne, le graphe disparaît et l'historique des mots aussi.
+
+-Pour le moment, le web socket ne fonctionne qu'en localhost donc impossible de lancer le mode multi sans le lancer sur sa machine
+
+-Il y a de l'optimisation à faire côté Java en utilisant le cours d'Automates.
+
+-Messagerie sur l'appli mobile non fonctionnel
+
+-Sur le site web, le chat ne fonctionne pas à cause du problème avec le websocket (cité en 3ème point)
+
+-Le site n'est pas responsive (à cause des valeurs utilisées en px)
+
+-Comme on a utilisé du SCSS, sur certains navigateurs qui ne sont pas à jour, il y a des bugs d'affichages comme un logo qui masque la page
+
+-Parfois, le graphe se sépare en 2
 
 Info supplémentaires : 
 
