@@ -1,7 +1,7 @@
 # LexiQuest
 
 ## ✏️ Auteurs :
-- Rabah Mehdi CHERAK : 👽
+- Rabah Mehdi CHERAK
 - Loïc MAURITIUS
 - Enzo LETOCART 
 - Thivakar JEYASEELAN 
