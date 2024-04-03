@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react"
 
 import './Components.css'
+import toast from "react-hot-toast"
+import axios from "axios"
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import HCNG from 'highcharts/modules/networkgraph';
+import Graph, { DataPoint, Nodes } from "./Graph";
+
+// Init Highcharts Networkgraph module
+HCNG(Highcharts);
 
 export interface WaitingRoom {
     name: string
@@ -14,29 +23,48 @@ export interface Message {
     content: string
 }
 
-export const Login = (props: {onLogin: (username: string, password: string) => void}) => {
-    const [username, setUsername] = React.useState("")
-    const [password, setPassword] = React.useState("")
-    return <div className="Login">
-        <div>Username: <input type="text" value={username} onChange={event => setUsername(event.target.value)} /></div>
-        <div>Password: <input type="password" value={password} onChange={event => setPassword(event.target.value)} /></div>
-        <button onClick={() => props.onLogin(username, password)} disabled={username === "" || password === ""}>Login</button>
-    </div>
+export const Login = (props: {onLogin: (username: string) => void}) => {
+    const [user, setUsername] = React.useState("")
 
+    useEffect(() => { 
+
+        (async function () {
+            try {
+                const response = await axios.get('../getUser.php');
+                console.log(response.data); // Vérifiez le contenu de response.data
+                setUsername(response.data); // Mettez à jour le state username avec response.data
+                
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données :", error);
+            }
+        })(); // Fonction anonyme auto-invoquée
+
+    }, []);
+
+    return(
+        <>
+            <div className="Login">
+                <input type="text" value={user} placeholder="Nom d'utilisateur" onChange={event => setUsername(event.target.value)} />
+                <button onClick={() => props.onLogin(user)} disabled={user === ""}>Connexion</button>
+            </div>
+        </>
+    );
 }
 
 export const WaitingRoomSelector = (props: {rooms: WaitingRoom[], onChosenRoom: (username: string, waitingRoom: string) => void, user: string}) => {
     const [username, setUsername] = React.useState("")
     const [selectedRoom, setSelectedRoom] = React.useState("")
+
+
     return <div className="WaintingRoomSelector">
-        <div>Username: {props.user}</div>
+        <div className="WaitingRoomUsername">{props.user}</div>
         <div>
-            {props.rooms.map(room => <div key={room.name}>
+            {props.rooms.map(room => <div className="RoomRadio" key={room.name}>
                 <input type="radio" name="room" value={room.name} checked={selectedRoom === room.name} onChange={() => setSelectedRoom(room.name)} />
                 {room.name}  ({room.attendeeNumber} joueurs )
             </div>)}
         </div>
-        <button onClick={() => props.onChosenRoom(props.user, selectedRoom)} disabled={ selectedRoom === "" || props.rooms.findIndex(x => x.name === selectedRoom) === -1}>Join the waiting room</button>
+        <button onClick={() => props.onChosenRoom(props.user, selectedRoom)} disabled={ selectedRoom === "" || props.rooms.findIndex(x => x.name === selectedRoom) === -1}>Rejoindre la salle d'attente</button>
     </div>
 }
 
@@ -47,8 +75,8 @@ export const RoomWaiter = (props: {roomName: string, startTimestamp: number, onL
         return () => clearTimeout(handle)
     }, [])
     return <div className="RoomWaiter">
-        <div>Waiting in room {props.roomName} for {Math.floor((currentTimestamp - props.startTimestamp) / 1000)} s.</div>
-        <div><button onClick={() => props.onLeaving() }>Leave the waiting room</button></div>
+        <div>Attente dans la room{props.roomName} : {Math.floor((currentTimestamp - props.startTimestamp) / 1000)} s.</div>
+        <div><button onClick={() => props.onLeaving() }>Quitter la salle d'attente</button></div>
     </div>
 }
 
@@ -71,7 +99,7 @@ export const MessageSender = (props: {onMessageWritten: (content: string) => voi
     const [content, setContent] = React.useState("")
     return <div className="footer">
         <input type="text" className="text-box" value={content} style={{flex: 1}} onChange={event => setContent(event.target.value)} />
-        <button id="sendMessage" onClick={() => {props.onMessageWritten(content); setContent('')}}>Send</button>
+        <button id="sendMessage" onClick={() => {props.onMessageWritten(content); setContent('')}}>Envoyer message</button>
     </div>
 }
 
@@ -84,24 +112,6 @@ export const ChatSession = (props: {messages: Message[], active: boolean, onMess
     
     return(
         <div id="Chat_container">
-            <div className={chatDisplay ? "chat active" : "chat"} onClick={displayChat}>
-                <div className="background"></div>
-                <svg className="chat-bubble" width="100" height="100" viewBox="0 0 100 100">
-                    <g className="bubble">
-                    <path className="line line1" d="M 30.7873,85.113394 30.7873,46.556405 C 30.7873,41.101961
-                    36.826342,35.342 40.898074,35.342 H 59.113981 C 63.73287,35.342
-                    69.29995,40.103201 69.29995,46.784744" />
-                    <path className="line line2" d="M 13.461999,65.039335 H 58.028684 C
-                        63.483128,65.039335
-                        69.243089,59.000293 69.243089,54.928561 V 45.605853 C
-                        69.243089,40.986964 65.02087,35.419884 58.339327,35.419884" />
-                    </g>
-                    <circle className="circle circle1" r="1.9" cy="50.7" cx="42.5" />
-                    <circle className="circle circle2" cx="49.9" cy="50.7" r="1.9" />
-                    <circle className="circle circle3" r="1.9" cy="50.7" cx="57.3" />
-                </svg>
-            </div>
-
             <div className={chatDisplay ? "floating-chat-active" : "floating-chat"}>
                 <div className="chat-display">
                     <div className="header">
@@ -113,9 +123,9 @@ export const ChatSession = (props: {messages: Message[], active: boolean, onMess
                     {props.active && <MessageSender onMessageWritten={props.onMessageWritten} />}
                 </div>
             </div>
-            <div>
-                <button onClick={() => props.onLeaving()} disabled={!props.active}>Leave the chat session</button>
-                <button onClick={() => props.onClosing()} disabled={props.active}>Clostttftye</button>
+            <div className="chat_container_buttons">
+                <button onClick={() => props.onLeaving()} disabled={!props.active}>Quitter la session</button>
+                <button onClick={() => props.onClosing()} disabled={props.active}>Fermer</button>
             </div>
         </div>
     )
@@ -132,8 +142,13 @@ export const Word = (props: {messages: Message[], active: boolean, onMessageWrit
     </div>
 }
 
-export const Game = (props: {onAddword: (word: string) => void,  players: string[]}) => {
+export const Game = (props: {onAddword: (word: string) => void,  players: string[], chart: string}) => {
     const [content, setContent] = React.useState("")
+    const Chart = JSON.parse(props.chart)
+
+    const datas = Chart.content;
+    const nodes = Chart.nodes;
+
     return <div className="Game">
         <p>Partie</p>
         <p>Joueurs:</p>
@@ -141,7 +156,8 @@ export const Game = (props: {onAddword: (word: string) => void,  players: string
             {props.players.map((player, i) => <li key={i}>Joueur {i+1}: {player}</li>)}
         </ul>
         <input type="text" value={content} style={{flex: 1}} onChange={event => setContent(event.target.value)} />
-        <button onClick={() => {props.onAddword(content); setContent('')}}>Send</button>
+        <button onClick={() => {props.onAddword(content); setContent('')}}>Envoyer mot</button>
+        <Graph data={datas} nodes={nodes} />
     </div>
 
 }
@@ -155,7 +171,7 @@ interface ChattingState { startTimestamp: number, messages: Message[], active: b
 type ChatState = DisconnectedState | ConnectingState | RoomSelectionState | WaitingState | ChattingState | LoginState
 
 export const ChatManager = (props: {socketUrl: string}) => {
-    const [chatState, setChatState] = React.useState<ChatState>({disconnected: true})
+    const [chatState, setChatState] = React.useState<ChatState>({connecting: true})
     const [connected, setConnected] = React.useState(false)
     const [socket, setSocket] = React.useState<WebSocket|null>(null)
     const [error, setError] = React.useState<string>('')
@@ -163,6 +179,7 @@ export const ChatManager = (props: {socketUrl: string}) => {
     const [gameid, setGameid] = React.useState<string>('')
     const [username, setUsername] = React.useState<string>('')
     const [roomPlayers, setRoomPlayers] = React.useState<string[]>([])
+    const [chart, setChart]= React.useState<string>('')
 
     const onNewSocketMessage = (kind: string, content: Record<string, any>) => {
         console.debug("Received message from websocket", content)
@@ -191,6 +208,7 @@ export const ChatManager = (props: {socketUrl: string}) => {
             
             case 'login_ok':
                 setUsername(content.username)
+                console.log("connecté certifié par webSocket");
                 break
 
             case 'waiting_room_list':
@@ -214,16 +232,25 @@ export const ChatManager = (props: {socketUrl: string}) => {
             case 'chat_session_started':
                 setChatState({startTimestamp: performance.now(), messages: [], active: true})
                 addChatMessage('admin', content.welcome_message)
-                addChatMessage('id', content.gameid)
+                // addChatMessage('id', content.gameid)
                 setRoomPlayers(content.players)
                 break
+
+            case 'new_game_started':
+                setChart(content.result)
+                break
+
+            case 'word_added':
+                setChart(content.result)
+                break
+
 
             case 'chat_message_received':
                 addChatMessage(content.sender, content.content)
                 break
 
             case 'attendee_left':
-                addChatMessage('admin', `Attendee ${content.attendee} left the chat session.`)
+                addChatMessage('admin', `L'utilisateur ${content.attendee} a quitté la session.`)
                 break
 
             case 'chat_session_left':
@@ -270,13 +297,13 @@ export const ChatManager = (props: {socketUrl: string}) => {
     const new_game = React.useCallback(() => {
         sendToSocket('new_game',{})
     }, [sendToSocket])
-    const login= React.useCallback((username: string, password: string) => {
-        sendToSocket('login', {user: username, password: password})
+    const login= React.useCallback((username: string) => {
+        sendToSocket('login', {user: username})
     }, [sendToSocket])
     const addWord = React.useCallback((word: string, username: string) => {
         sendToSocket('add_word', {word: word, user: username})    
     }, [sendToSocket])
-
+    
     useEffect(() => {
         if ('connecting' in chatState) {
             setConnected(true)
@@ -330,7 +357,7 @@ export const ChatManager = (props: {socketUrl: string}) => {
         }
     }, [connected, props.socketUrl])
 
-    return <div className="ChatManager">
+    return( <div className="ChatManager">
         {error !== '' && 
             <div className="Error">Error: {error} <button onClick={() => setError('')}>OK</button></div>}
         {'disconnected' in chatState && 
@@ -351,6 +378,6 @@ export const ChatManager = (props: {socketUrl: string}) => {
             <ChatSession messages={chatState.messages} active={chatState.active} onMessageWritten={sendChatMessage} onNewgame={new_game} onLeaving={leaveChatSession} onClosing={closeChatSession} />
         }
         {'messages' in chatState &&
-            <Game onAddword={word => addWord(word, username)} players={roomPlayers} />}
-    </div>
+            <Game onAddword={word => addWord(word, username)} players={roomPlayers} chart={chart}/>}
+    </div>);
 }

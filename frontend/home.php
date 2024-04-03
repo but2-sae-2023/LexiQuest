@@ -37,11 +37,11 @@ if (isset($_SESSION['user'])) {
                 </div>
                 <div class="item">
                     <a href="game.php"><button>1 joueur</button></a>
+                    <a href="../websocket/frontend/build/index.html"><button>Multijoueur</button></a>
                     <a href="../backend/rules.php"><button>Règles</button></a>
                     <a href="../backend/trace.php"><button>Page de traces </button></a>
                     <a href="../backend/disconnect.php"><button>Déconnexion</button></a>
                 </div>
-
             </div>
         </div>
     </div>

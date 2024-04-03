@@ -28,7 +28,7 @@ if (!$_SESSION['gameRunning']) {
 	$_SESSION['gameId'] = $id;
 
 	chdir("../c");
-	exec("./new_game.out dico.bin $id chat chien animaux voiture bus 2>&1", $output);
+	exec("./new_game.out dico.bin $id CD shérif Olympia chevelu cool chien environnement 2>&1", $output);
 
 	[$startWord, $endWord] = explode(",", file("games/$id-game/gameFile.txt")[1]);
 

@@ -6,11 +6,12 @@ const Header = () => {
 
   return (
     <>
-      <header>
-        <img src={logo} alt="logo de LexiQuest" />
-        
+      <div className="logo">
+          <img src={logo} alt="logo" />
+        </div>
+      <div className="header"> 
         <h1>LexiQuest</h1>
-      </header>
+      </div>
     </>
   );
 };

@@ -1,7 +1,6 @@
 <?php
 include_once ("../class/user.php");
 include_once ("../class/game.php");
-session_start();
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -33,16 +32,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nodes = json_decode($_POST['nodes']);
     }
 
-
     foreach ($lines as $line) {
         [$word1, $word2, $score] = explode(",", $line);
         $content[] = ["from" => $word2, "to" => $word1, "linkFormat" => $score];
         $content[] = ["from" => $word1, "to" => $word2, "linkFormat" => $score];
-        
-        $nodes[] = ["id" => $word1, "color" => "white"];
-        $nodes[] = ["id" => $word2, "color" => "white"];
+
+        $colors = ["white", "#567fe8", "#e8a956"];
+
+        if (!in_array($word1, array_column($nodes, 'id')) && !in_array($word2, array_column($nodes, 'id'))) {
+            foreach ($colors as $color) {
+                if (!in_array(["id" => $word1, "color" => $color], $nodes)) {
+                    $nodes[] = ["id" => $word1, "color" => $color];
+                    break;
+                }
+            }
+
+            foreach ($colors as $color) {
+                if (!in_array(["id" => $word2, "color" => $color], $nodes)) {
+                    $nodes[] = ["id" => $word2, "color" => $color];
+                    break;
+                }
+            }
+        }
     }
 
-    echo json_encode(['content' => $content, 'nodes' => $nodes, 'words' => $words, 'state' => 200]);
+    echo json_encode(['content' => $content, 'nodes' => $nodes, 'words' => $words, 'state' => 200, 'id' => $userWord]);
 }
+
 

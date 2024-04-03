@@ -24,7 +24,7 @@
   color: white;
 }
 
-main{
+main {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -44,60 +44,49 @@ main{
 }
 
 /* Styling input elements, paragraphs, and form subheadings */
-input, .input p, form h3 {
+.input p, form h3 {
   margin: 5px 50px;
 }
 
 /* Styling text inputs */
-input:not(input[type="submit"]) {
-  background: hsla(41, 100%, 0%, 0.4);
-  border-radius: 5px;
+input:not(input[type='submit']):not(input[type='radio']) {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 64px;
   border: none;
   outline: none;
-  font-size: 1em;
-  padding: 20px 15px;
+  color: rgba(255, 255, 255);
+  padding: 16px 24px;
+  font-family: var(--text-font);
+  font-size: 16px;
+
   transition: 0.3s;
 }
 
 /* Styling placeholder text */
-input::placeholder {
-  color: white;
-  opacity: 30%;
+input:not(input[type='submit']):not(input[type='radio'])::placeholder {
+  color: rgba(255, 255, 255, 0.75);
 }
 
-/* Styling focus state of text inputs */
-input:not(input[type="submit"]):focus {
-  box-shadow: 0px 0px 0px 2px;
-}
-
-/* Removing default spinner from number inputs */
-input[type="number"]::-webkit-inner-spin-button {
-  appearance: none;
+input:not(input[type='submit']):not(input[type='radio']):focus {
+  box-shadow: 0px 0px 16px 0px rgba(255, 255, 255, 0.5);
 }
 
 /* Styling submit button */
-input[type=submit], button {
-  font-family: var(--title-font);
-  color: #240B36;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  font-size: 1.5em;
-  padding: 20px 20px;
-  transition: 0.3s;
-}
-
-/* Styling hover state of submit button */
-input[type=submit]:hover, button:hover{
+button, input[type='submit'] {
+  color: black;
+  padding: 16px 24px;
   cursor: pointer;
-  color: white;
-  background-color: hsla(41, 100%, 0%, 0.5);
-  box-shadow: 0px 0px 0px 2px;
+  background-color: white;
+  border: none;
+  border-radius: 64px;
+  transition: 0.3s;
+  font-size: 16px;
+  font-family: var(--title-font);
 }
 
-/* Styling focus state of submit button */
-input[type=submit]:focus {
-  box-shadow: 0px 0px 20px 0px white;
+button:hover, input[type='submit']:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
 }
 
 /* Formulaire de connection */
@@ -105,10 +94,34 @@ input[type=submit]:focus {
 .Login{
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  gap: 24px;
 }
 
-.Login div{
+#Chat_container {
+  /* border: 2px solid white; */
   display: flex;
-  flex-direction: row;
-  font-size: 1.4rem;
+  flex-direction: column;
+}
+
+/* #Chat_container * {
+  display: flex; */
+/* } */
+
+.chat-display {
+  /* border: 2px solid red; */
+  padding: 0;
+  flex-direction: column;
+}
+
+.chat_container_buttons {
+  /* border: 2px solid red; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* margin: 16px; */
+  /* padding: 16px; */
 }

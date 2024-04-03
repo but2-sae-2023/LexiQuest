@@ -45,5 +45,7 @@ def distance(mot1,mot2):
 
 ##print(distance("amour","numéro"))
 ##print(sys.argv[1])
-if(len(sys.argv)==3):
-    print(distance(sys.argv[1],sys.argv[2]))
+
+if __name__ == "__main__":
+    if(len(sys.argv)==3):
+        print(distance(sys.argv[1],sys.argv[2]))

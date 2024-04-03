@@ -161,7 +161,7 @@ class DefaultChatHooks(ChatHooks):
                 if 'state' in response_json:  # Check if the 'result' key exists
                     if 'id' in response_json:
                         if 'nodes' in response_json:
-                            return response_json['state'],response_json['id'], response_json['nodes']
+                            return response_json['state'],response_json['id'], response_json['nodes'], response_json
         return res.status_code
         # Iterate over all attendees in the chat session
         """
@@ -171,23 +171,20 @@ class DefaultChatHooks(ChatHooks):
 
     async def add_word(self, chat_game_id: int, word: str, user: str, nodes: json) :
         url = 'https://perso-etudiant.u-pem.fr/~rabah.cherak/LexiQuest-bis/multi/add_word.php'
-        query = {'gameId': chat_game_id, 'userword': word, 'username': user, 'nodes': json.dumps(nodes)}
+        query = {'gameId': chat_game_id, 'userWord': word, 'username': user, 'nodes': json.dumps(nodes)}
         res = requests.post(url, query, headers={"User-Agent": "Firefox/12.0"})
         if res.status_code == 200:
             if res.text:
                 response_json = res.json()  # Parse the response as JSON
                 if 'state' in response_json:
                     if 'nodes' in response_json:
-                        return response_json['state'], response_json['nodes']
+                        return response_json['state'], response_json['nodes'], response_json
         return res.status_code
 
         
 
     async def check_id(self, chat_session_id:int):  
         return 0          
-                
-
-
 
 
 class UppercaseChatHooks(ChatHooks):
@@ -202,71 +199,3 @@ class UppercaseChatHooks(ChatHooks):
             
         return {k: to_upper(v) for (k, v) in result.items()}
     
-
-class GameHooks(ChatHooks):
-        def __init__(self, score_engine, game_pages, chat_server):
-            self.score_engine = score_engine
-            self.game_pages = game_pages
-            self.chat_server = chat_server
-            self.games = {}
-
-        async def new_game(room_name,players):
-            url = 'http://localhost/ancien_controles_cnil/sae/test.php'
-            query = {'site': 'test'}
-            res = request.post(url, query, headers={"User-Agent": "Firefox/12.0"})
-            return res
-
-        def start_game(self, room_name, players):
-            # Créer un nouveau jeu et l'ajouter à la liste des jeux en cours
-            game = Game(room_name, players, self.score_engine)
-            self.games[room_name] = game
-
-            # Envoyer les mots de départ et d'arrivée aux joueurs
-            start_word, end_word = game.get_words()
-            for player in players:
-                self.chat_server.send_message(player, {'type': 'game_start', 'start_word': start_word, 'end_word': end_word})
-
-            # Calculer le chemin optimal si un solveur est implémenté
-            if hasattr(self.score_engine, 'solve'):
-                optimal_path = self.score_engine.solve(start_word, end_word)
-                for player in players:
-                    self.chat_server.send_message(player, {'type': 'optimal_path', 'path': optimal_path})
-
-        def handle_message(self, room_name, player, message):
-            game = self.games.get(room_name)
-            if not game:
-                return
-
-            # Vérifier si le message contient une proposition de mot valide
-            if 'type' not in message or message['type'] != 'word_proposal':
-                return
-
-            proposed_word = message['word']
-            if not game.is_valid_proposal(proposed_word):
-                self.chat_server.send_message(player, {'type': 'invalid_proposal'})
-                return
-
-            # Mettre à jour le score et le chemin du joueur
-            new_score, new_path = game.update_score_and_path(player, proposed_word)
-
-            # Envoyer un message de réponse aux autres joueurs
-            response = {'type': 'new_score', 'player': player, 'score': new_score, 'path': new_path}
-            for other_player in game.players:
-                if other_player != player:
-                    self.chat_server.send_message(other_player, response)
-
-        def end_game(self, room_name):
-            game = self.games.get(room_name)
-            if not game:
-                return
-
-            # Calculer les scores finaux et les chemins construits
-            scores_and_paths = game.get_scores_and_paths()
-
-            # Envoyer un message de fin aux joueurs
-            for player in game.players:
-                response = {'type': 'game_end', 'scores_and_paths': scores_and_paths}
-                self.chat_server.send_message(player, response)
-
-            # Supprimer le jeu de la liste des jeux en cours
-            del self.games[room_name]

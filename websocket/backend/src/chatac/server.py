@@ -175,6 +175,10 @@ class ChatSession(object):
         # warn the attendee itself that its query has been acknowledged
         await self.put_in_message_queue([attendee.id], 'chat_session_left')
 
+    async def new_word(self, result):
+        clients= list(self.clients)
+        await self.put_in_message_queue(clients, 'word_added', result= result)
+
     async def terminate(self, exit_message=''):
         """
         Terminate the chat session for everybody
@@ -244,7 +248,7 @@ class ChatServer(object):
                 if result[0]==200:
                     client.chat_session.gameid = result[1]
                     client.chat_session._game_nodes=result[2]
-                    await client.chat_session.send_message(None,'new_game', result= result, nodes=client.chat_session._game_nodes)
+                    await client.chat_session.send_message(None,'new_game_started', result= json.dumps(result[3], ensure_ascii=False))
                 else:
                     await client.chat_session.send_message(None,'error_new_game', result= result)
             usernames = []
@@ -373,19 +377,11 @@ class ChatServer(object):
 
                         elif msg_kind == 'login':
                             user = str(decoded_msg.get('user', '')).strip()
-                            password = str(decoded_msg.get('password', '')).strip()
-                            if not user or not password:
-                                await client.send_message('no password or login')
-                            else:
-                                result = await self.hooks.on_login(user, password)
-                                if result == 'login_ok':
-                                    client.username = user
-                                    await client.send_message('waiting_room_list', waiting_rooms = get_waiting_rooms_desc())
-                                    await client.send_message('login_ok', username=user)
-                                elif result==0:
-                                    await client.send_message('connection erro', result=result)
-                                else:
-                                    await client.send_message('login_failed', result=result)
+                            client.username = user
+                            print("Utilisateur : " + user + " connecté")
+                            await client.send_message('waiting_room_list', waiting_rooms = get_waiting_rooms_desc())
+                            await client.send_message('login_ok', username=user)
+  
 
                         elif msg_kind == 'new_game':
                             if client.chat_session:
@@ -409,7 +405,9 @@ class ChatServer(object):
                                     result=await self.hooks.add_word(client.chat_session.gameid, word, user, client.chat_session._game_nodes)
                                     if result[0]==200:
                                         client.chat_session._game_nodes=result[1]
-                                        await client.send_message('word_added', result=result, nodes=result[1])
+                                        ##await client.send_message('word_added', result= json.dumps(result[2], ensure_ascii=False))
+                                        clients = list(client.chat_session.clients)
+                                        await client.chat_session.put_in_message_queue(clients, 'word_added', result= json.dumps(result[2], ensure_ascii=False))
                                     else:
                                         await client.send_message('error_add_word', result=result)
                                     

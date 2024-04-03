@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import Header from './Header';
 import { ChatManager } from './Components';
@@ -8,6 +8,7 @@ function substituteHost(s: string): string {
 }
 
 function App() {
+
   return (
     <>
       <Toaster
@@ -16,9 +17,7 @@ function App() {
       />
       <div className="App">
         <Header />
-        <main>
-          <ChatManager socketUrl={substituteHost(process.env.REACT_APP_BACKEND_URL || 'ws://localhost:8090/chat')} />
-        </main>
+        <ChatManager socketUrl={substituteHost(process.env.REACT_APP_BACKEND_URL || 'ws:localhost:8090/chat')} />
       </div>
     </>
     
