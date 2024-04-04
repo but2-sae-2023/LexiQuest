@@ -27,15 +27,15 @@ Pour lancer le WebSocket, vous pouvez regarder sur le dépôt git suivant : [Cha
 
 ## 🐛 Bugs et fonctionnalités non présentes :
 
-- Le calcul des scores sémantiques ainsi que l’ajout des mot prend de plus en plus temps à se faire à mesure que le joueur ajoute des mots.
-- Au bout d'environ 8 mots insérés dans la chaîne, le graphe disparaît et l'historique des mots aussi.
+- ~~Le calcul des scores sémantiques ainsi que l’ajout des mot prend de plus en plus temps à se faire à mesure que le joueur ajoute des mots.~~
+- ~~Au bout d'environ 8 mots insérés dans la chaîne, le graphe disparaît et l'historique des mots aussi.~~
 - Pour le moment, le websocket ne fonctionne qu'en localhost donc il est impossible de lancer le mode multijoueur sans le lancer sur la machine personnelle.
 - Il y a de l'optimisation à faire côté Java en utilisant le cours d'Automates ( notamment avec le parcours du graphe par l'algorithme de Prim).
 - La messagerie sur l’application mobile n’est pas encore fonctionnelle.
 - Sur le site web, le chat ne fonctionne pas à cause du problème avec le websocket (c.f 3ème point)
 - Le site n'est pas responsive (à cause des valeurs utilisées en px)
 - Comme on a utilisé du SCSS, sur certains navigateurs qui ne sont pas à jour, il y a des bugs d'affichages comme un logo qui masque la page
-- Parfois, le graphe se sépare en 2 à cause de mots à similarité trop faible
+- ~~Parfois, le graphe se sépare en 2 à cause de mots à similarité trop faible~~
 
 ## ➕ Info supplémentaires :
 Nous avons fusionné avec un autre groupe de SAE, ce faisant nous avons pu mettre en commun le module en C et nous nous sommes principalement inspirés du code du groupe fusionné.
