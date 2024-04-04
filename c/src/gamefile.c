@@ -200,32 +200,17 @@ void add_word(const char *filename, char *dictionary, char *newWord, long offset
     // On met le curseur à la fin du fichier
     fseek(file, 0, SEEK_END);
 
-    char buffer[128];
-    char command[256];
     char score[128];
 
     // Affichage de la liste de couples
     // printf("Affichage de la liste de couples\n");
     for (int j = 0; j < nMots; j++)
     {
-        // printf("Dans la boucle for : %s\n", listeMots[j]);
-
-        sprintf(command, "python3 solveur.py %s %s", newWord, listeMots[j]);
-        FILE *pipe = popen(command, "r");
-        if (!pipe)
-            EXIT_FAILURE;
-
-        if (fgets(buffer, sizeof(buffer), pipe) != NULL)
-        {
-            buffer[strcspn(buffer, "\n")] = '\0';
-            strcpy(score, buffer);
-            // printf("Score : %s\n", score);
-        }
-
-        pclose(pipe);
-
-        listeNewCouples[j] = malloc(strlen(newWord) + strlen(listeMots[j]) + strlen(score) + 3);
-        sprintf(listeNewCouples[j], "%s,%s,%s", newWord, listeMots[j], score);
+        double semanticScore = calculSem(dictionary, newWord, listeMots[j]);
+        double levenshteinScore = levenshtein(newWord, listeMots[j]);
+        double score = (semanticScore*5 + levenshteinScore)/6;
+        listeNewCouples[j] = malloc(sizeof(newWord) + sizeof(listeMots[j]) + sizeof(levenshteinScore) + sizeof(semanticScore));
+        sprintf(listeNewCouples[j], "%s,%s,%lf", newWord, listeMots[j], score);
         fprintf(file, "%s\n", listeNewCouples[j]);
     }
     fclose(file);

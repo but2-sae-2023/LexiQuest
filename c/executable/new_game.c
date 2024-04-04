@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     // recupere leur offset
     long offset1 = fileGetOffset(word1);
     long offset2 = fileGetOffset(word2);
-    /*if (offset1 == -1)
+    if (offset1 == -1)
     {
         printf("Erreur : Impossible de trouver le premier mot aleatoire '%s' dans le dictionnaire \n", word1);
         exit(EXIT_FAILURE);
@@ -75,11 +75,10 @@ int main(int argc, char *argv[])
         printf("Erreur : Impossible de trouver le mot aleatoire '%s' dans le dictionnaire \n", word2);
         exit(EXIT_FAILURE);
     }
-*/
-    // calcul de la similarité sémantique et de la distance de levenshtein pour en faire la moyenne
+
     char buffer[128];
     char command[256];
-    double score=-1;
+    double best_score=-1;
 
     sprintf(command, "python3 solveur.py %s %s", argv[3], argv[4]);
     FILE *pipe = popen(command, "r");
@@ -89,9 +88,9 @@ int main(int argc, char *argv[])
     while (fgets(buffer, sizeof(buffer), pipe) != NULL)
     {
         //printf("Output: %s", buffer);
-        score = atof(buffer);
-        printf("Score : %f\n", score);
-        if(score==-1){
+        best_score = atof(buffer);
+        printf("Score : %f\n", best_score);
+        if(best_score==-1){
             printf("Erreur : Impossible de trouver la similarité entre les mots '%s' et '%s' \n", word1, word2);
             exit(EXIT_FAILURE);
         }
@@ -108,12 +107,33 @@ int main(int argc, char *argv[])
     char gameFile[128];
     sprintf(gameFile, "./games/%s-game/gameFile.txt", gameID);
 
+
+    // création du fichier best_score.txt et écriture du score
+    char bestScoreFile[128];
+    sprintf(bestScoreFile, "./games/%s-game/best_score.txt", gameID);
+    FILE *bestScore = fopen(bestScoreFile, "w");
+    if (bestScore == NULL)
+    {
+        printf("Erreur : Impossible de créer le fichier best_score.txt\n");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        fprintf(bestScore, "%f", best_score);
+    }
+    fclose(bestScore);
+
+    double score;
+    double sem = calculSem(file_name, argv[3], argv[4]);
+    double lev= levenshtein(argv[3], argv[4]);
+    score= (sem*5+lev)/6;
+
     createGameFile(gameFile, word1, word2, offset1, offset2, score);
 
     FILE *file = fopen(gameFile, "r");
     if (file == NULL)
     {
-        printf("Erreur : Impossible d'ouvrir le fichier gameFile.csv\n");
+        printf("Erreur : Impossible d'ouvrir le fichier gameFile.txt\n");
         exit(EXIT_FAILURE);
     }
     else
