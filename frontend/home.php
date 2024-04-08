@@ -17,7 +17,8 @@ if (isset($_SESSION['user'])) {
 <html>
 
 <head>
-    <title>Home</title>
+    <link rel="icon" type="image/svg+xml" href="/~rabah.cherak/LexiQuest-bis/websocket/frontend/dist/favicon.png" />
+    <title>LexiQuest</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../style/style.scss" />
     <link rel="stylesheet" href="../style/home.scss" />
@@ -36,8 +37,9 @@ if (isset($_SESSION['user'])) {
                     <hr>
                 </div>
                 <div class="item">
-                    <a href="game.php"><button>1 joueur</button></a>
-                    <a href="../websocket/frontend/build/index.html"><button>Multijoueur</button></a>
+                    <!-- <a href="game.php"><button>1 joueur</button></a>
+                    <a href="../websocket/frontend/dist"><button>Multijoueur</button></a> -->
+                    <a href="../backend/lobby.php"><button>Jouer</button></a>
                     <a href="../backend/rules.php"><button>Règles</button></a>
                     <a href="../backend/trace.php"><button>Page de traces </button></a>
                     <a href="../backend/disconnect.php"><button>Déconnexion</button></a>

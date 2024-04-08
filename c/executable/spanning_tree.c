@@ -37,6 +37,8 @@ int processWords(Sommet *sommets, AllWords *allWords, double *distMax, int nbSom
 {
     double distance;
     int idAMax, idBMax = -1;
+    int lev=0;
+    int sem=0;
 
     for (int j = 0; j < words ; j++)
     {
@@ -44,20 +46,23 @@ int processWords(Sommet *sommets, AllWords *allWords, double *distMax, int nbSom
         {
             double semDist = calculSemFromOffst("./dico.bin", sommets[nbSommets - 1].offset, allWords[j].offset); 
             double levDist= levenshtein(allWords[j].word, sommets[nbSommets - 1].word);
-            distance = semDist;
+            distance = (semDist*5+levDist)/6;
             //printf("%s,%s: %f\n",allWords[j].word, sommets[nbSommets - 1].word, semDist);
             //printf("diff : %f\n", semDist-distance);
             //MAX des 2
-            if(levDist>semDist){
+            /*if(levDist>semDist){
                 distance=levDist;
+                lev++;
             }
             else {
                 distance=semDist;
+                sem++;
                 }
-                
+               */ 
             if (distance > allWords[j].maxDistance.distance)
             {
-
+                //printf("diff : %f\n", semDist-levDist);
+                printf("%s-%s lev : %f, sem : %f, score: %f\n",allWords[j].word,sommets[nbSommets-1].word , levDist, semDist, distance);
                 allWords[j].maxDistance.distance = distance;
                 allWords[j].maxDistance.id = nbSommets - 1;
                 allWords[j].maxDistance.offset = allWords[j].offset;
@@ -78,6 +83,7 @@ int processWords(Sommet *sommets, AllWords *allWords, double *distMax, int nbSom
         updateLinks(sommets, allWords, idBMax, &nbSommets);
         fprintf(fout, "%s,%s,%.2f\n", allWords[idBMax].word, sommets[idAMax].word, *distMax);
         printf("--%s,%s,%.2f--\n", allWords[idBMax].word, sommets[idAMax].word, *distMax);
+    
 
        }
 
@@ -151,7 +157,7 @@ int main(int argc, char *argv[])
         distMax = 0;
         nbSommets++;
     } while (result != -1);
-    fclose(fout); 
+    fclose(fout);
     free(tempC);
     return 0;
 }

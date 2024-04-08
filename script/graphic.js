@@ -10,6 +10,7 @@ Highcharts.chart('graph-container', {
     chart: {
         type: 'networkgraph',
         backgroundColor: null,
+        animation: false,
     },
 
     plotOptions: {

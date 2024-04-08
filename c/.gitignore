@@ -4,3 +4,4 @@ games/*
 dico.bin
 *.out
 *.exe
+profondeur.py

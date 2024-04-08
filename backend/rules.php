@@ -17,7 +17,8 @@ if (isset($_SESSION['user'])) {
 <html>
 
 <head>
-    <title>Règles</title>
+    <link rel="icon" type="image/svg+xml" href="/~rabah.cherak/LexiQuest-bis/websocket/frontend/dist/favicon.png" />
+    <title>LexiQuest</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../style/style.scss" />
     <link rel="stylesheet" href="../style/rules.scss" />
@@ -53,11 +54,13 @@ if (isset($_SESSION['user'])) {
                     <strong>Similarité des mots</strong> - La similarité entre deux mots est évaluée selon deux critères
                     :
                     <div class="list">
-                        • <strong>Similarité sémantique</strong> - Les mots doivent être utilisés dans le même contexte. Par exemple,
+                        • <strong>Similarité sémantique</strong> - Les mots doivent être utilisés dans le même contexte.
+                        Par exemple,
                         "hautbois" et "clarinette" sont sémantiquement similaires.
                     </div>
                     <div class="list">
-                        • <strong>Similarité orthographique</strong> - Les mots doivent avoir des orthographes proches. Par exemple,
+                        • <strong>Similarité orthographique</strong> - Les mots doivent avoir des orthographes proches.
+                        Par exemple,
                         "bateau" et "château" sont orthographiquement similaires.
                     </div>
                 </div>

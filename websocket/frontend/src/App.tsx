@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import './App.css';
 import Header from './Header';
 import { ChatManager } from './Components';
@@ -17,10 +16,13 @@ function App() {
       />
       <div className="App">
         <Header />
-        <ChatManager socketUrl={substituteHost(process.env.REACT_APP_BACKEND_URL || 'ws:localhost:8090/chat')} />
+        <ChatManager socketUrl={substituteHost('ws:localhost:8090/chat')} />
       </div>
+      <a href="../../../frontend/home.php">
+        <div className="back"></div>
+      </a>
     </>
-    
+
   );
 }
 

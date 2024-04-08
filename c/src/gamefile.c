@@ -58,7 +58,7 @@ char *int_to_string(int number)
 
 void add_word(const char *filename, char *dictionary, char *newWord, long offset, char *player)
 {
-    FILE *file = fopen(filename, "r+");
+    FILE *file = fopen(filename, "r");
     if (file == NULL)
     {
         printf("Unable to open file %s\n", filename);
@@ -66,178 +66,69 @@ void add_word(const char *filename, char *dictionary, char *newWord, long offset
         exit(EXIT_FAILURE);
     }
 
+    // Ouverture d'un nouveau fichier en mode écriture
+    FILE *newFile = fopen("temp_file.txt", "w");
+    if (newFile == NULL)
+    {
+        printf("Unable to create new file\n");
+        perror("Erreur lors de la création du nouveau fichier :");
+        exit(EXIT_FAILURE);
+    }
+
     int nMots, ligneCouples;
-    // printf("Lecture de la première ligne\n");
-    //  Lire les valeurs de la première ligne
     fscanf(file, "%d,%d\n", &nMots, &ligneCouples);
-    // printf("nMots = %d, ligneCouples = %d\n", nMots, ligneCouples);
-
-    // Création d'une liste de mots
     char *listeMots[nMots];
+    char buffer[1024];
 
-    // Création d'une liste pour stocker les mots qu'on doit insérer
-    char *listeMotsAInserer[nMots];
-
-    // Création d'une liste pour stocker les anciens couples du fichier
-    char *listeCouples[getNbCouples(nMots)];
-
-    // Création d'une liste de couples avec les scores
-    char *listeNewCouples[nMots];
-
-    char mot1[max_w];
-    char *mot2;
-    char *dup;
-
-    // printf("Lecture de la deuxième ligne\n");
-    //  Lire la deuxième ligne (les mots existants)
-    fgets(mot1, max_w, file);
-    // printf("%s\n", mot1);
-    dup = strdup(mot1);
-    mot2 = strtok(dup, ",");
-    int i = 0;
-
-    // Remplissage de la liste de mots
-    listeMots[i] = strdup(mot2);
-    // printf("%s\n", listeMots[i]);
-
-    i = 0;
-    // Remplissage de la liste de mots
-    while (mot2 != NULL)
+    // Écriture des premières lignes dans le nouveau fichier
+    fprintf(newFile, "%d,%d\n", nMots + 1, ligneCouples + nMots);
+    fgets(buffer, sizeof(buffer), file);
+    size_t buffer_length = strlen(buffer);
+    if (buffer_length > 0 && buffer[buffer_length - 1] == '\n')
     {
-        listeMots[i] = strdup(mot2);
-        i++;
-        mot2 = strtok(NULL, ",");
+        buffer[buffer_length - 1] = '\0';
     }
+    fprintf(newFile, "%s,%s\n", buffer, newWord);
 
-    // Récupération des anciens mots insérés
-    i = 0;
-    // printf("Affichage de la liste de mots à insérer\n");
-    while (i < nMots)
-    {
-        fgets(mot1, max_w, file);
-        listeMotsAInserer[i] = strdup(mot1);
-        i++;
-    }
+    // Copie des lignes existantes du fichier original dans le nouveau fichier
 
-    // Récupération des anciens couples
-    i = 0;
-    // printf("Affichage de la liste de couples\n");
-    int n = getNbCouples(nMots);
-    // printf("nbCouples = %d\n", n);
-    while (i < n)
+    for (int i = 0; i < nMots; i++)
     {
-        fgets(mot1, max_w, file);
-        listeCouples[i] = strdup(mot1);
-        i++;
-    }
-
-    // printf("Affichage de la liste de mots\n");
-    for (int j = 0; j < nMots; j++)
-    {
-        if (strchr(listeMots[j], '\n') != NULL)
+        fgets(buffer, sizeof(buffer), file);
+        fprintf(newFile, "%s", buffer);
+        char *token = strtok(buffer, ",");
+        char *mot = token;
+        if (strcmp(mot, newWord) == 0)
         {
-            listeMots[j][strcspn(listeMots[j], "\n")] = '\0';
-        }
-        if (strcmp(listeMots[j], newWord) == 0)
-        {
-            printf("Le mot %s existe déjà dans le fichier de partie\n", newWord);
+            printf("Le mot %s est déjà présent dans le fichier de partie\n", newWord);
+            fclose(file);
+            fclose(newFile);
+            remove("temp_file.txt");
             exit(EXIT_FAILURE);
         }
-    }
-
-    // printf("Affichage de la liste de mots à insérer\n");
-    /*for (int j = 0; j < nMots; j++) {
-        printf("%s", listeMotsAInserer[j]);
-    }*/
-
-    fseek(file, 0, SEEK_SET);
-    // printf("Je suis là 1\n");
-
-    // On met à jour le nombre de mots
-    ligneCouples += nMots;
-    nMots++;
-    fprintf(file, "%d,%d\n", nMots, ligneCouples);
-    // printf("Je suis là 2\n");
-
-    nMots--;
-
-    // On réécrit les mots existants
-    for (int j = 0; j < nMots; j++)
-    {
-        // printf("listeMots[%d] = %s\n", j, listeMots[j]);
-        fprintf(file, "%s,", listeMots[j]);
-        // printf("Je suis là 3\n");
-    }
-    // On écrit le nouveau mot sur la 2e ligne
-    fprintf(file, "%s\n", newWord);
-    // printf("Je suis là 4\n");
-
-    // On réécrit les mots à insérer
-    // printf("Affichage de la liste de mots à insérer\n");
-    for (int j = 0; j < nMots; j++)
-    {
-        // printf("listeMotsAInserer[%d] = %s\n", j, listeMotsAInserer[j]);
-        fprintf(file, "%s", listeMotsAInserer[j]);
-        // printf("Je suis là 5\n");
-    }
-    char *newWordWithOffset = malloc(sizeof(newWord) + sizeof(player) + 10);
-    sprintf(newWordWithOffset, "%s,%s,%ld", newWord, player, offset); // offset
-
-    // On écrit le nouveau mot avec son offset
-    fprintf(file, "%s\n", newWordWithOffset);
-    // printf("Je suis là 6\n");
-
-    // On réécrit les anciens couples
-    // printf("Nombre d'anciens couples à insérer : %d\n", n);
-    for (int j = 0; j < n; j++)
-    {
-        // printf("listeCouples[%d] = %s\n", j, listeCouples[j]);
-        // printf("Position actuelle du curseur : %ld\n", ftell(file));
-        fprintf(file, "%s", listeCouples[j]);
-        // printf("Je suis là 7\n");
-    }
-
-    // On met le curseur à la fin du fichier
-    fseek(file, 0, SEEK_END);
-
-    char buffer[128];
-    char command[256];
-    char score[128];
-
-    // Affichage de la liste de couples
-    // printf("Affichage de la liste de couples\n");
-    for (int j = 0; j < nMots; j++)
-    {
-        // printf("Dans la boucle for : %s\n", listeMots[j]);
-
-        sprintf(command, "python3 solveur.py %s %s", newWord, listeMots[j]);
-        FILE *pipe = popen(command, "r");
-        if (!pipe)
-            EXIT_FAILURE;
-
-        if (fgets(buffer, sizeof(buffer), pipe) != NULL)
+        else
         {
-            buffer[strcspn(buffer, "\n")] = '\0';
-            strcpy(score, buffer);
-            // printf("Score : %s\n", score);
+            listeMots[i] = strdup(mot);
         }
+    }
 
-        pclose(pipe);
+    fprintf(newFile, "%s,%s,%ld\n", newWord, player, offset);
 
-        listeNewCouples[j] = malloc(strlen(newWord) + strlen(listeMots[j]) + strlen(score) + 3);
-        sprintf(listeNewCouples[j], "%s,%s,%s", newWord, listeMots[j], score);
-        fprintf(file, "%s\n", listeNewCouples[j]);
+    while (fgets(buffer, sizeof(buffer), file) != NULL)
+    {
+        fprintf(newFile, "%s", buffer);
+    }
+
+    for (int j = 0; j < nMots; j++)
+    {
+        // printf("mot : %s\n", listeMots[j]);
+        double semanticScore = calculSem(dictionary, newWord, listeMots[j]);
+        double levenshteinScore = levenshtein(newWord, listeMots[j]);
+        double score = (semanticScore * 5 + levenshteinScore) / 6;
+        fprintf(newFile, "%s,%s,%.2f\n", newWord, listeMots[j], score);
     }
     fclose(file);
-
-    // Libération de la mémoire
-    for (int j = 0; j < nMots; j++)
-    {
-        free(listeMots[j]);
-        free(listeMotsAInserer[j]);
-        free(listeCouples[j]);
-        free(listeNewCouples[j]);
-    }
-    free(dup);
-    free(newWordWithOffset);
+    fclose(newFile);
+    remove(filename);
+    rename("temp_file.txt", filename);
 }

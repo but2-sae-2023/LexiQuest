@@ -75,10 +75,10 @@ class ChatHooks(object):
 class DefaultChatHooks(ChatHooks):
     DEFAULT_WELCOME_MESSAGE = "Welcome everybody!"
     DEFAULT_DURATION = 60
-    DEFAULT_ROOMS ={"Serveur #1": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
-                    "Serveur #2": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
-                    "Serveur #3": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
-                    "Serveur #4": {"attendee_number": 1, "duration": 600, "welcome_message": "Bienvenue!"},
+    DEFAULT_ROOMS ={"Serveur n°1": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
+                    "Serveur n°2": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
+                    "Serveur n°3": {"attendee_number": 2, "duration": 1000, "welcome_message": "Bienvenue!"},
+                    "Serveur n°4": {"attendee_number": 1, "duration": 600, "welcome_message": "Bienvenue!"},
     } 
     DEF_ID=0
 

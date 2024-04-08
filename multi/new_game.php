@@ -29,15 +29,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 chdir("../c");
-$lines = file('games/' . $id . '-game/msTree.txt');
-$words = explode(",", file('games/'.$id.'-game/gameFile.txt')[1]);
+$path = 'games/' . $id . '-game/';
+$msTree = file($path . 'msTree.txt');
+$words = explode(",", file($path . 'gameFile.txt')[1]);
+$target = file($path . 'best_score.txt');
 
 $content = [];
 
-foreach ($lines as $line) {
+foreach ($msTree as $line) {
 	[$word1, $word2, $score] = explode(",", $line);
 	$content[] = ["from" => $word2, "to" => $word1, "linkFormat" => $score];
 	$content[] = ["from" => $word1, "to" => $word2, "linkFormat" => $score];
 }
 
-echo json_encode(['content' => $content, 'nodes' => $nodes, 'words' => $words, 'id' => $id, 'state' => 200]);
+if (file_exists($path . 'bestPath.txt')) {
+	$scores = [];
+	$bestPath = file($path . 'bestPath.txt');
+	foreach ($bestPath as $line) {
+		[$word1, $word2, $score] = explode(",", $line);
+		$scores[] = $score;
+	}
+} else {
+	$scores = [0];
+}
+
+echo json_encode(['content' => $content, 'nodes' => $nodes, 'words' => $words, 'id' => $id, 'state' => 200, 'target' => $target, 'current' => $scores]);

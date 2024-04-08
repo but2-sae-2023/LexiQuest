@@ -1,17 +1,13 @@
 import './header.css';
-import logo from './logo.png';
-
+// import logo from '../public/vite.svg';
 
 const Header = () => {
 
   return (
     <>
       <div className="logo">
-          <img src={logo} alt="logo" />
+          <img src="logo.png" alt="logo" />
         </div>
-      <div className="header"> 
-        <h1>LexiQuest</h1>
-      </div>
     </>
   );
 };

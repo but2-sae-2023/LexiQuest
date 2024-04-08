@@ -8,7 +8,9 @@ include_once ("../class/user.php");
 include_once ("../class/game.php");
 session_start();
 
-if (isset($_SESSION['backend'])) { unset($_SESSION['backend']); }
+if (isset($_SESSION['backend'])) {
+	unset($_SESSION['backend']);
+}
 
 $user = $_SESSION['user'];
 $username = $user->getUsername();
@@ -28,7 +30,7 @@ if (!$_SESSION['gameRunning']) {
 	$_SESSION['gameId'] = $id;
 
 	chdir("../c");
-	exec("./new_game.out dico.bin $id CD shérif Olympia chevelu cool chien environnement 2>&1", $output);
+	exec("./new_game.out dico.bin $id CD chiens transport machine corps nature famille chat loup animal renard 2>&1", $output);
 
 	[$startWord, $endWord] = explode(",", file("games/$id-game/gameFile.txt")[1]);
 
@@ -53,18 +55,40 @@ if (isset($_POST['userWord'])) {
 }
 
 chdir("../c");
-$lines = file('games/' . $id . '-game/msTree.txt');
-$words = explode(",", file('games/'.$id.'-game/gameFile.txt')[1]);
+$path = 'games/' . $id . '-game/';
+$msTree = file($path . 'msTree.txt');
+$words = explode(",", file($path . 'gameFile.txt')[1]);
+$target = file($path . 'best_score.txt');
 
 $content = [];
 $nodes = $_SESSION['nodes'];
 
-foreach ($lines as $line) {
+foreach ($msTree as $line) {
 	[$word1, $word2, $score] = explode(",", $line);
-	$content[] = ["from" => $word2, "to" => $word1, "linkFormat" => $score];
-	$content[] = ["from" => $word1, "to" => $word2, "linkFormat" => $score];
+	$content[] = ["from" => $word2, "to" => $word1, "linkFormat" => $score, "color" => "white"];
+	$content[] = ["from" => $word1, "to" => $word2, "linkFormat" => $score, "color" => "white"];
 	$nodes[] = ["id" => $word1, "color" => "white"];
 	$nodes[] = ["id" => $word2, "color" => "white"];
 }
 
-echo json_encode(['content' => $content, 'nodes' => $nodes, 'words' => $words]);
+if (file_exists($path . 'bestPath.txt')) {
+	$scores = [];
+	$bestPath = file($path . 'bestPath.txt');
+	foreach ($bestPath as $line) {
+		[$bpWord1, $bpWord2, $score] = explode(",", $line);
+		$scores[] = $score;
+		foreach ($content as $item) {
+			if (($item['from'] == $bpWord1 || $item['from'] == $bpWord2) && isset($item['color'])) {
+				$item['color'] = 'red';
+			}
+			if (($item['to'] == $bpWord1 || $item['to'] == $bpWord2) && isset($item['color'])) {
+				$item['color'] = 'red';
+			}
+		}
+	}
+} else {
+	$scores = [0];
+}
+
+
+echo json_encode(['content' => $content, 'nodes' => $nodes, 'words' => $words, 'target' => $target, 'current' => min($scores)]);

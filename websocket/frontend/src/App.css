@@ -6,14 +6,14 @@
   --title-font: 'Lexend', sans-serif;
 }
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: var(--text-font);
 }
 
-.App{
+.App {
   /* Applying a linear gradient background */
   background: linear-gradient(108deg, #0066FF 0%, #0D005C 100%);
   display: flex;
@@ -44,7 +44,8 @@ main {
 }
 
 /* Styling input elements, paragraphs, and form subheadings */
-.input p, form h3 {
+.input p,
+form h3 {
   margin: 5px 50px;
 }
 
@@ -72,7 +73,8 @@ input:not(input[type='submit']):not(input[type='radio']):focus {
 }
 
 /* Styling submit button */
-button, input[type='submit'] {
+button,
+input[type='submit'] {
   color: black;
   padding: 16px 24px;
   cursor: pointer;
@@ -84,14 +86,15 @@ button, input[type='submit'] {
   font-family: var(--title-font);
 }
 
-button:hover, input[type='submit']:hover {
+button:hover,
+input[type='submit']:hover {
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
 }
 
 /* Formulaire de connection */
 
-.Login{
+.Login {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -101,27 +104,72 @@ button:hover, input[type='submit']:hover {
 }
 
 #Chat_container {
+  position: absolute;
+  left: 0;
+  bottom: 0;
   /* border: 2px solid white; */
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
+  margin: 32px;
+  width: auto;
 }
-
-/* #Chat_container * {
-  display: flex; */
-/* } */
 
 .chat-display {
   /* border: 2px solid red; */
   padding: 0;
+  display: flex;
   flex-direction: column;
+  gap: 32px;
+  margin: 16px;
+  width: max-content;
+  max-width: 400px;
+}
+
+li {
+  margin-left: 16px;
+  word-break: break-all;
+  margin: 8px;
+}
+
+.chat-display .footer {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+}
+
+.messages {
+  /* border: 2px solid lime; */
+  display: flex;
+  flex-direction: column;
+  width: 115%;
+  height: 250px;
+  overflow: auto;
 }
 
 .chat_container_buttons {
-  /* border: 2px solid red; */
+  border: 2px solid red;
   display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   /* margin: 16px; */
   /* padding: 16px; */
+}
+
+.back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 64px;
+  height: 48px;
+  width: 48px;
+  background: rgba(255, 255, 255, 1) url(back.png) center/16px no-repeat;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.back:hover {
+  filter: invert(1);
+  background-color: rgba(255, 255, 255, 0.5);
 }

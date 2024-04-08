@@ -30,7 +30,8 @@ $result = $cnx->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trace</title>
+    <link rel="icon" type="image/svg+xml" href="/~rabah.cherak/LexiQuest-bis/websocket/frontend/dist/favicon.png" />
+    <title>LexiQuest</title>
     <link rel="stylesheet" href="../style/style.scss">
     <link rel="stylesheet" href="../style/trace.scss">
 
